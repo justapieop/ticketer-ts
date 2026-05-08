@@ -10,7 +10,15 @@ export class TypeOrmTicketRepository implements TicketRepository {
   public constructor(
     @InjectRepository(TypeOrmTicketSchema)
     private readonly ticketRepository: Repository<TypeOrmTicketSchema>
-  ) {}
+  ) { }
+  
+  public async listTicket(): Promise<Ticket[]> {
+    return await this.ticketRepository.find({
+      order: {
+        createdAt: "DESC",
+      },
+    });
+  }
   
   public async save(ticket: Ticket): Promise<Ticket> {
     const dbObj: TypeOrmTicketSchema = this.ticketRepository.create(ticket);

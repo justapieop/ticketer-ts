@@ -16,4 +16,8 @@ export class TicketService {
   public async getTicketById(id: string): Promise<Ticket | null> {
     return await this.ticketRepository.getTicketById(id);
   }
+
+  public async listTicket(): Promise<Ticket[]> {
+    return await this.ticketRepository.listTicket();
+  }
 }
