@@ -2,6 +2,7 @@ import { Command, CommandRunner, Option } from "nest-commander";
 import { Ticket, TicketPriority, TicketStage } from "../domain/Ticket.schema";
 import { TicketService } from "../Ticket.service";
 import { nanoid } from "nanoid";
+import Table from "cli-table3";
 
 export interface CreateTicketFlags {
   title: string,
@@ -30,7 +31,22 @@ export class CreateTicketCommand extends CommandRunner {
         updatedAt: null,
       }
     );
-    console.log(ticket);
+
+    const table = new Table({
+      head: ["ID", "Title", "Subject", "Created", "Priority", "Stage"],
+    });
+
+    table.push([
+      ticket.id,
+      ticket.title,
+      ticket.subject,
+      new Date(ticket.createdAt).toLocaleString(),
+      TicketPriority[ticket.priority] || String(ticket.priority),
+      TicketStage[ticket.stage] || String(ticket.stage),
+    ]);
+
+    console.log("Ticket created successfully:");
+    console.log(table.toString());
   }
 
   @Option({
