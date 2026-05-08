@@ -4,6 +4,7 @@ import { TypeOrmTicketSchema } from "./infra/TypeOrmTicket.schema";
 import { TICKET_REPOSITORY } from "./app/Ticket.repository";
 import { TypeOrmTicketRepository } from "./infra/TypeOrmTicket.repository";
 import { TicketService } from "./Ticket.service";
+import { CreateTicketCommand } from "./commands/CreateTicket.command";
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { TicketService } from "./Ticket.service";
       useExisting: TypeOrmTicketRepository,
     },
     TicketService,
+    CreateTicketCommand,
   ],
 })
 export class TicketModule {}

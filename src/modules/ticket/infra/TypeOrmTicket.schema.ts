@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, Index, PrimaryColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, Index, PrimaryColumn, UpdateDateColumn } from "typeorm";
 import { TicketPriority, TicketStage } from "../domain/Ticket.schema";
 
 @Entity({
@@ -29,11 +29,11 @@ export class TypeOrmTicketSchema {
   })
   public createdAt!: Date;
 
-  @CreateDateColumn({
+  @UpdateDateColumn({
     type: "integer",
-    nullable: false,
+    nullable: true,
   })
-  public updatedAt!: Date;
+  public updatedAt!: Date | null;
 
 
   @Column({

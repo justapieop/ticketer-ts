@@ -1,0 +1,79 @@
+import { Command, CommandRunner, Option } from "nest-commander";
+import { Ticket, TicketPriority, TicketStage } from "../domain/Ticket.schema";
+import { TicketService } from "../Ticket.service";
+import { nanoid } from "nanoid";
+
+export interface CreateTicketFlags {
+  title: string,
+  subject: string,
+  priority: TicketPriority,
+  stage: TicketStage,
+}
+
+@Command({ name: "create" })
+export class CreateTicketCommand extends CommandRunner {
+  public constructor(
+    private readonly ticketService: TicketService,
+  ) {
+    super();
+  }
+
+  public async run(passedParams: string[], options: CreateTicketFlags): Promise<void> {
+    const ticket: Ticket = await this.ticketService.createTicket(
+      {
+        title: options.title,
+        subject: options.subject,
+        priority: options.priority,
+        stage: options.stage,
+        id: nanoid(16),
+        createdAt: new Date(),
+        updatedAt: null,
+      }
+    );
+    console.log(ticket);
+  }
+
+  @Option({
+    flags: "-t, --title [string]",
+    description: "Specify the title for the ticket",
+    required: true,
+  })
+  public parseTitle(val: string): string {
+    return val;
+  }
+
+  @Option({
+    flags: "-s, --subject [string]",
+    description: "Specify the subject for the ticket",
+    required: true,
+  })
+  public parseSubject(val: string): string {
+    return val;
+  }
+
+  @Option({
+    flags: "-p, --priority [string]",
+    description: "Specify the priority for the ticket",
+    required: false,
+    defaultValue: TicketPriority.Standard,
+    choices: Object.keys(TicketPriority).filter(
+      (key) => Number.isNaN(Number(key))
+    ),
+  })
+  public parsePriority(val: string): TicketPriority {
+    return TicketPriority[val as keyof typeof TicketPriority];
+  }
+
+  @Option({
+    flags: "-o, --stage [string]",
+    description: "Specify the stage for the ticket",
+    required: false,
+    defaultValue: TicketStage.Created,
+    choices: Object.keys(TicketStage).filter(
+      (key) => Number.isNaN(Number(key))
+    ),
+  })
+  public parseStage(val: string): TicketStage {
+    return TicketStage[val as keyof typeof TicketStage];
+  }
+}

@@ -4,7 +4,7 @@ export class Ticket {
     public title: string,
     public subject: string,
     public createdAt: Date,
-    public updatedAt: Date,
+    public updatedAt: Date | null,
     public priority: TicketPriority,
     public stage: TicketStage,
   ) {}
