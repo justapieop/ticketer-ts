@@ -6,6 +6,7 @@ import { TypeOrmTicketRepository } from "./infra/TypeOrmTicket.repository";
 import { TicketService } from "./Ticket.service";
 import { CreateTicketCommand } from "./commands/CreateTicket.command";
 import { ListTicketCommand } from "./commands/ListTicket.command";
+import { GetTicketCommand } from "./commands/GetTicket.command";
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ListTicketCommand } from "./commands/ListTicket.command";
     TicketService,
     CreateTicketCommand,
     ListTicketCommand,
+    GetTicketCommand,
   ],
 })
 export class TicketModule {}
