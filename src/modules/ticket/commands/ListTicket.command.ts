@@ -1,7 +1,7 @@
 import { Command, CommandRunner } from "nest-commander";
 import { TicketService } from "../Ticket.service";
 import { Ticket, TicketPriority, TicketStage } from "../domain/Ticket.schema";
-import Table from "cli-table3";
+import Table, { type Table as TableType, } from "cli-table3";
 
 @Command({ name: "list", description: "List all tickets", })
 export class ListTicketCommand extends CommandRunner {
@@ -19,7 +19,7 @@ export class ListTicketCommand extends CommandRunner {
       return;
     }
 
-    const table = new Table({
+    const table: TableType = new Table({
       head: ["ID", "Title", "Subject", "Created", "Last Updated", "Priority", "Stage"],
     });
 
