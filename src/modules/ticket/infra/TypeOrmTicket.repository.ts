@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, SelectQueryBuilder } from "typeorm";
 import { TicketRepository } from "../app/Ticket.repository";
 import { TypeOrmTicketSchema } from "./TypeOrmTicket.schema";
-import { Ticket } from "../domain/Ticket.schema";
+import { Ticket, TicketStage } from "../domain/Ticket.schema";
 
 @Injectable()
 export class TypeOrmTicketRepository implements TicketRepository {
@@ -11,6 +11,14 @@ export class TypeOrmTicketRepository implements TicketRepository {
     @InjectRepository(TypeOrmTicketSchema)
     private readonly ticketRepository: Repository<TypeOrmTicketSchema>
   ) { }
+
+  public async setStage(id: string, stage: TicketStage): Promise<void> {
+    await this.ticketRepository.update({
+      id,
+    }, {
+      stage,
+    });
+  }
   
   public async listTicket(): Promise<Ticket[]> {
     return await this.ticketRepository.find({

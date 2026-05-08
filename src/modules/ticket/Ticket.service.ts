@@ -37,4 +37,8 @@ export class TicketService {
   public async listTicket(): Promise<Ticket[]> {
     return await this.ticketRepository.listTicket();
   }
+
+  public async setTicketStage(id: string, stage: TicketStage): Promise<void> {
+    await this.ticketRepository.setStage(id, stage);
+  }
 }
