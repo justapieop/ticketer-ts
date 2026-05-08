@@ -1,6 +1,14 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { TICKET_REPOSITORY, type TicketRepository } from "./app/Ticket.repository";
-import { Ticket } from "./domain/Ticket.schema";
+import { Ticket, TicketPriority, TicketStage } from "./domain/Ticket.schema";
+import { nanoid } from "nanoid";
+
+export interface CreateTicketDto {
+  title: string;
+  subject: string;
+  priority: TicketPriority;
+  stage: TicketStage;
+}
 
 @Injectable()
 export class TicketService {
@@ -9,7 +17,16 @@ export class TicketService {
     private readonly ticketRepository: TicketRepository,
   ) { }
   
-  public async createTicket(ticket: Ticket): Promise<Ticket> {
+  public async createTicket(dto: CreateTicketDto): Promise<Ticket> {
+    const ticket = new Ticket(
+      nanoid(16),
+      dto.title,
+      dto.subject,
+      new Date(),
+      null,
+      dto.priority,
+      dto.stage
+    );
     return await this.ticketRepository.save(ticket);
   }
 

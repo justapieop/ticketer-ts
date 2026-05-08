@@ -1,7 +1,6 @@
 import { Command, CommandRunner, Option } from "nest-commander";
 import { Ticket, TicketPriority, TicketStage } from "../domain/Ticket.schema";
 import { TicketService } from "../Ticket.service";
-import { nanoid } from "nanoid";
 import Table from "cli-table3";
 
 export interface CreateTicketFlags {
@@ -20,17 +19,12 @@ export class CreateTicketCommand extends CommandRunner {
   }
 
   public async run(passedParams: string[], options: CreateTicketFlags): Promise<void> {
-    const ticket: Ticket = await this.ticketService.createTicket(
-      {
-        title: options.title,
-        subject: options.subject,
-        priority: options.priority,
-        stage: options.stage,
-        id: nanoid(16),
-        createdAt: new Date(),
-        updatedAt: null,
-      }
-    );
+    const ticket: Ticket = await this.ticketService.createTicket({
+      title: options.title,
+      subject: options.subject,
+      priority: options.priority,
+      stage: options.stage,
+    });
 
     const table = new Table({
       head: ["ID", "Title", "Subject", "Created", "Priority", "Stage"],
