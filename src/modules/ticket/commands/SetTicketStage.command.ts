@@ -1,5 +1,5 @@
 import { Command, CommandRunner, Option } from "nest-commander";
-import { TicketStage } from "../domain/Ticket.schema";
+import { TicketStage } from "../domain/Ticket.domain";
 import { TicketService } from "../Ticket.service";
 
 export interface SetTicketStageFlags {

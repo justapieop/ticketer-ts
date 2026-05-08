@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, SelectQueryBuilder } from "typeorm";
 import { TicketRepository } from "../app/Ticket.repository";
 import { TypeOrmTicketSchema } from "./TypeOrmTicket.schema";
-import { Ticket, TicketStage } from "../domain/Ticket.schema";
+import { Ticket, TicketStage } from "../domain/Ticket.domain";
 
 @Injectable()
 export class TypeOrmTicketRepository implements TicketRepository {

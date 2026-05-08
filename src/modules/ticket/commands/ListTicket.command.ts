@@ -1,6 +1,6 @@
 import { Command, CommandRunner } from "nest-commander";
 import { TicketService } from "../Ticket.service";
-import { Ticket, TicketPriority, TicketStage } from "../domain/Ticket.schema";
+import { Ticket, TicketPriority, TicketStage } from "../domain/Ticket.domain";
 import Table, { type Table as TableType, } from "cli-table3";
 
 @Command({ name: "list", description: "List all tickets", })

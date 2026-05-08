@@ -1,6 +1,6 @@
 import { Command, CommandRunner, Option } from "nest-commander";
 import { TicketService } from "../Ticket.service";
-import { Ticket, TicketPriority, TicketStage } from "../domain/Ticket.schema";
+import { Ticket, TicketPriority, TicketStage } from "../domain/Ticket.domain";
 import Table from "cli-table3";
 
 export interface GetTicketFlags {

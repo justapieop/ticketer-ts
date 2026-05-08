@@ -1,6 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { TICKET_REPOSITORY, type TicketRepository } from "./app/Ticket.repository";
-import { Ticket, TicketPriority, TicketStage } from "./domain/Ticket.schema";
+import { Ticket, TicketPriority, TicketStage } from "./domain/Ticket.domain";
 import { nanoid } from "nanoid";
 
 export interface CreateTicketDto {

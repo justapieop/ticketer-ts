@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, Entity, Index, PrimaryColumn, UpdateDateColumn } from "typeorm";
-import { TicketPriority, TicketStage } from "../domain/Ticket.schema";
+import { TicketPriority, TicketStage } from "../domain/Ticket.domain";
 
 @Entity({
   name: "tickets",

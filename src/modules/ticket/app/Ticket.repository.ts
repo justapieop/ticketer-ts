@@ -1,4 +1,4 @@
-import { Ticket, TicketStage } from "../domain/Ticket.schema";
+import { Ticket, TicketStage } from "../domain/Ticket.domain";
 
 export const TICKET_REPOSITORY = Symbol("TICKET_REPOSITORY");
 

@@ -1,5 +1,5 @@
 import { Command, CommandRunner, Option } from "nest-commander";
-import { Ticket, TicketPriority, TicketStage } from "../domain/Ticket.schema";
+import { Ticket, TicketPriority, TicketStage } from "../domain/Ticket.domain";
 import { TicketService } from "../Ticket.service";
 import Table from "cli-table3";
 
