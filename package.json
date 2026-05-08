@@ -23,6 +23,7 @@
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/typeorm": "^11.0.1",
     "better-sqlite3": "^12.9.0",
+    "cli-table3": "^0.6.5",
     "nanoid": "^5.1.11",
     "nest-commander": "^3.20.1",
     "reflect-metadata": "^0.2.2",
