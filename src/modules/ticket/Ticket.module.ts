@@ -7,7 +7,7 @@ import { TicketService } from "./Ticket.service";
 import { CreateTicketCommand } from "./commands/CreateTicket.command";
 import { ListTicketCommand } from "./commands/ListTicket.command";
 import { GetTicketCommand } from "./commands/GetTicket.command";
-import { SetTicketStageCommand } from "./commands/SetTicketStage.command";
+import { EditTicketCommand } from "./commands/EditTicket.command";
 
 @Module({
   imports: [
@@ -23,7 +23,7 @@ import { SetTicketStageCommand } from "./commands/SetTicketStage.command";
     CreateTicketCommand,
     ListTicketCommand,
     GetTicketCommand,
-    SetTicketStageCommand,
+    EditTicketCommand,
   ],
 })
 export class TicketModule {}
