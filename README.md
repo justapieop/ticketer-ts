@@ -33,6 +33,8 @@ Exit the app
 exit
 ```
 
+Add `-h` or `--help` after each command to see command usage
+
 # Build instruction
 
 You will need the rust toolchain for this. Download [here](https://rustup.rs/)
