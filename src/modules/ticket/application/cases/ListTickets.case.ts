@@ -4,12 +4,12 @@ import { TICKET_REPOSITORY, type TicketRepository } from "../Ticket.repository";
 
 @Injectable()
 export class ListTicketsUseCase {
-  constructor(
+  public constructor(
     @Inject(TICKET_REPOSITORY)
     private readonly ticketRepository: TicketRepository,
   ) {}
 
-  async execute(): Promise<Ticket[]> {
+  public async execute(): Promise<Ticket[]> {
     return await this.ticketRepository.listTicket();
   }
 }

@@ -6,12 +6,12 @@ import { CreateTicketDto } from "../dtos/CreateTicket.dto";
 
 @Injectable()
 export class CreateTicketUseCase {
-  constructor(
+  public constructor(
     @Inject(TICKET_REPOSITORY)
     private readonly ticketRepository: TicketRepository,
   ) {}
 
-  async execute(dto: CreateTicketDto): Promise<Ticket> {
+  public async execute(dto: CreateTicketDto): Promise<Ticket> {
     const ticket = new Ticket(
       nanoid(16),
       dto.title,

@@ -5,12 +5,12 @@ import { TicketNotFoundError } from "../../domain/exceptions/TicketNotFound.erro
 
 @Injectable()
 export class GetTicketUseCase {
-  constructor(
+  public constructor(
     @Inject(TICKET_REPOSITORY)
     private readonly ticketRepository: TicketRepository,
   ) {}
 
-  async execute(id: string): Promise<Ticket> {
+  public async execute(id: string): Promise<Ticket> {
     const ticket = await this.ticketRepository.getTicketById(id);
     if (!ticket) {
       throw new TicketNotFoundError(id);
