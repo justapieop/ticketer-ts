@@ -1,18 +1,18 @@
 import { Command, CommandRunner } from "nest-commander";
-import { TicketService } from "../Ticket.service";
-import { Ticket, TicketPriority, TicketStage } from "../domain/Ticket.domain";
+import { Ticket, TicketPriority, TicketStage } from "../../domain/Ticket.domain";
 import Table, { type Table as TableType, } from "cli-table3";
+import { ListTicketsUseCase } from "../../application/cases/ListTickets.case";
 
 @Command({ name: "list", description: "List all tickets", })
 export class ListTicketCommand extends CommandRunner {
   public constructor(
-    private readonly ticketService: TicketService,
+    private readonly listTicketsUseCase: ListTicketsUseCase,
   ) {
     super();
   }
 
   public async run(passedParams: string[], options?: Record<string, any>): Promise<void> {
-    const tickets: Ticket[] = await this.ticketService.listTicket();
+    const tickets: Ticket[] = await this.listTicketsUseCase.execute();
 
     if (tickets.length === 0) {
       console.log("No tickets found.");

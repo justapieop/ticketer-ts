@@ -1,5 +1,18 @@
 import { Column, CreateDateColumn, Entity, Index, PrimaryColumn, UpdateDateColumn } from "typeorm";
-import { TicketPriority, TicketStage } from "../domain/Ticket.domain";
+
+export enum TypeOrmTicketPriority {
+  Standard,
+  Priority,
+  Urgent,
+}
+
+export enum TypeOrmTicketStage {
+  Created,
+  InProgress,
+  Escalated,
+  Resolving,
+  Closed,
+}
 
 @Entity({
   name: "tickets",
@@ -38,15 +51,15 @@ export class TypeOrmTicketSchema {
 
   @Column({
     type: "text",
-    enum: TicketPriority,
-    enumName: "TicketPriority"
+    enum: TypeOrmTicketPriority,
+    enumName: "TypeOrmTicketPriority"
   })
-  public priority!: TicketPriority;
+  public priority!: TypeOrmTicketPriority;
 
   @Column({
     type: "text",
-    enum: TicketPriority,
-    enumName: "TicketPriority"
+    enum: TypeOrmTicketStage,
+    enumName: "TypeOrmTicketStage"
   })
-  public stage!: TicketStage;
+  public stage!: TypeOrmTicketStage;
 }
