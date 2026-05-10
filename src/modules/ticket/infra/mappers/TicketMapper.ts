@@ -1,5 +1,5 @@
 import { Ticket, TicketPriority, TicketStage } from "../../domain/Ticket.domain";
-import { TypeOrmTicketSchema, TypeOrmTicketPriority, TypeOrmTicketStage } from "../TypeOrmTicket.schema";
+import { TypeOrmTicketSchema, TypeOrmTicketPriority, TypeOrmTicketStage } from "../typeorm/TypeOrmTicket.schema";
 
 export class TicketMapper {
   public static toPersistencePriority(priority: TicketPriority): TypeOrmTicketPriority {

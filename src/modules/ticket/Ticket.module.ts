@@ -1,8 +1,8 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { TypeOrmTicketSchema } from "./infra/TypeOrmTicket.schema";
+import { TypeOrmTicketSchema } from "./infra/typeorm/TypeOrmTicket.schema";
 import { TICKET_REPOSITORY } from "./application/Ticket.repository";
-import { TypeOrmTicketRepository } from "./infra/TypeOrmTicket.repository";
+import { TypeOrmTicketRepository } from "./infra/typeorm/TypeOrmTicket.repository";
 import { CreateTicketCommand } from "./infra/commands/CreateTicket.command";
 import { ListTicketCommand } from "./infra/commands/ListTicket.command";
 import { GetTicketCommand } from "./infra/commands/GetTicket.command";
