@@ -1,8 +1,8 @@
 import { Command, CommandRunner, Option } from "nest-commander";
-import { Ticket, TicketPriority, TicketStage } from "../domain/Ticket.domain";
+import { Ticket, TicketPriority, TicketStage } from "../../domain/Ticket.domain";
 import Table from "cli-table3";
-import { GetTicketUseCase } from "../application/cases/GetTicket.case";
-import { TicketNotFoundError } from "../domain/exceptions/TicketNotFound.error";
+import { GetTicketUseCase } from "../../application/cases/GetTicket.case";
+import { TicketNotFoundError } from "../../domain/exceptions/TicketNotFound.error";
 
 export interface GetTicketFlags {
   id: string,

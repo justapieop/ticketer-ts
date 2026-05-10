@@ -1,8 +1,8 @@
 import { Command, CommandRunner, Option } from "nest-commander";
-import { Ticket, TicketPriority, TicketStage } from "../domain/Ticket.domain";
+import { Ticket, TicketPriority, TicketStage } from "../../domain/Ticket.domain";
 import Table from "cli-table3";
-import { CreateTicketUseCase } from "../application/cases/CreateTicket.case";
-import { CreateTicketDto } from "../application/dtos/CreateTicket.dto";
+import { CreateTicketUseCase } from "../../application/cases/CreateTicket.case";
+import { CreateTicketDto } from "../../application/dtos/CreateTicket.dto";
 
 export interface CreateTicketFlags {
   title: string,

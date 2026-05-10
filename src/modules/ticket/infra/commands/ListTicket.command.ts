@@ -1,7 +1,7 @@
 import { Command, CommandRunner } from "nest-commander";
-import { Ticket, TicketPriority, TicketStage } from "../domain/Ticket.domain";
+import { Ticket, TicketPriority, TicketStage } from "../../domain/Ticket.domain";
 import Table, { type Table as TableType, } from "cli-table3";
-import { ListTicketsUseCase } from "../application/cases/ListTickets.case";
+import { ListTicketsUseCase } from "../../application/cases/ListTickets.case";
 
 @Command({ name: "list", description: "List all tickets", })
 export class ListTicketCommand extends CommandRunner {
