@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { TICKET_REPOSITORY, type TicketRepository } from "./app/Ticket.repository";
+import { TICKET_REPOSITORY, type TicketRepository } from "./application/Ticket.repository";
 import { CreateTicketDto, Ticket, TicketPriority, TicketStage } from "./domain/Ticket.domain";
 import { nanoid } from "nanoid";
 
