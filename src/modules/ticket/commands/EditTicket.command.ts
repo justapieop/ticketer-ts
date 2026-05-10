@@ -1,7 +1,10 @@
 import { Ticket, TicketPriority, TicketStage } from "../domain/Ticket.domain";
 import { Command, CommandRunner, Option } from "nest-commander";
-import { TicketService } from "../Ticket.service";
 import Table from "cli-table3";
+import { GetTicketUseCase } from "../application/cases/GetTicket.case";
+import { UpdateTicketUseCase } from "../application/cases/UpdateTicket.case";
+import { UpdateTicketDto } from "../application/dtos/UpdateTicket.dto";
+import { TicketNotFoundError } from "../domain/exceptions/TicketNotFound.error";
 
 export interface EditTicketFlags {
   id: string,
@@ -14,47 +17,47 @@ export interface EditTicketFlags {
 @Command({ name: "ticket", description: "Edit ticket", })
 export class EditTicketCommand extends CommandRunner {
   public constructor(
-    private readonly ticketService: TicketService,
+    private readonly getTicketUseCase: GetTicketUseCase,
+    private readonly updateTicketUseCase: UpdateTicketUseCase,
   ) {
     super();
   }
   
   public async run(passedParams: string[], options: EditTicketFlags): Promise<void> {
-    const ticket: Ticket | null = await this.ticketService.getTicketById(options.id);
-
-    if (!ticket) {
-      console.error("Ticket does not exist");
-      return;
+    let ticket: Ticket;
+    try {
+      ticket = await this.getTicketUseCase.execute(options.id);
+    } catch (error) {
+      if (error instanceof TicketNotFoundError) {
+        console.error("Ticket does not exist");
+        return;
+      }
+      throw error;
     }
 
-    if (options.title) {
-      await this.ticketService.setTicketTitle(options.id, options.title)
-    }
+    await this.updateTicketUseCase.execute(
+      new UpdateTicketDto(
+        options.id,
+        options.title,
+        options.subject,
+        options.priority,
+        options.stage,
+      ),
+    );
 
-    if (options.subject) {
-      await this.ticketService.setTicketSubject(options.id, options.subject);
-    }
-
-    if (options.priority) {
-      await this.ticketService.setTicketPriority(options.id, options.priority);
-    }
-
-    if (options.stage) {
-      await this.ticketService.setTicketStage(options.id, options.stage);
-    }
-
+    const updatedTicket = await this.getTicketUseCase.execute(options.id);
     const table = new Table({
       head: ["ID", "Title", "Subject", "Created", "Last Updated", "Priority", "Stage"],
     });
         
     table.push([
-      ticket.id,
-      ticket.title,
-      ticket.subject,
-      new Date(ticket.createdAt).toLocaleString(),
-      ticket.updatedAt ? new Date(ticket.updatedAt).toLocaleString() : "Not updated yet",
-      TicketPriority[ticket.priority] || String(ticket.priority),
-      TicketStage[ticket.stage] || String(ticket.stage),
+        updatedTicket.id,
+        updatedTicket.title,
+        updatedTicket.subject,
+        new Date(updatedTicket.createdAt).toLocaleString(),
+        updatedTicket.updatedAt ? new Date(updatedTicket.updatedAt).toLocaleString() : "Not updated yet",
+        TicketPriority[updatedTicket.priority] || String(updatedTicket.priority),
+        TicketStage[updatedTicket.stage] || String(updatedTicket.stage),
     ]);
         
     console.log(table.toString());

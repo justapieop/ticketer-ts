@@ -3,11 +3,14 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { TypeOrmTicketSchema } from "./infra/TypeOrmTicket.schema";
 import { TICKET_REPOSITORY } from "./application/Ticket.repository";
 import { TypeOrmTicketRepository } from "./infra/TypeOrmTicket.repository";
-import { TicketService } from "./Ticket.service";
 import { CreateTicketCommand } from "./commands/CreateTicket.command";
 import { ListTicketCommand } from "./commands/ListTicket.command";
 import { GetTicketCommand } from "./commands/GetTicket.command";
 import { EditTicketCommand } from "./commands/EditTicket.command";
+import { CreateTicketUseCase } from "./application/cases/CreateTicket.case";
+import { GetTicketUseCase } from "./application/cases/GetTicket.case";
+import { ListTicketsUseCase } from "./application/cases/ListTickets.case";
+import { UpdateTicketUseCase } from "./application/cases/UpdateTicket.case";
 
 @Module({
   imports: [
@@ -19,7 +22,10 @@ import { EditTicketCommand } from "./commands/EditTicket.command";
       provide: TICKET_REPOSITORY,
       useExisting: TypeOrmTicketRepository,
     },
-    TicketService,
+    CreateTicketUseCase,
+    GetTicketUseCase,
+    ListTicketsUseCase,
+    UpdateTicketUseCase,
     CreateTicketCommand,
     ListTicketCommand,
     GetTicketCommand,

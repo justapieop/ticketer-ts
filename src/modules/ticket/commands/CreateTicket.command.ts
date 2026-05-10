@@ -1,7 +1,8 @@
 import { Command, CommandRunner, Option } from "nest-commander";
-import { CreateTicketDto, Ticket, TicketPriority, TicketStage } from "../domain/Ticket.domain";
-import { TicketService } from "../Ticket.service";
+import { Ticket, TicketPriority, TicketStage } from "../domain/Ticket.domain";
 import Table from "cli-table3";
+import { CreateTicketUseCase } from "../application/cases/CreateTicket.case";
+import { CreateTicketDto } from "../application/dtos/CreateTicket.dto";
 
 export interface CreateTicketFlags {
   title: string,
@@ -13,13 +14,13 @@ export interface CreateTicketFlags {
 @Command({ name: "create" })
 export class CreateTicketCommand extends CommandRunner {
   public constructor(
-    private readonly ticketService: TicketService,
+    private readonly createTicketUseCase: CreateTicketUseCase,
   ) {
     super();
   }
 
   public async run(passedParams: string[], options: CreateTicketFlags): Promise<void> {
-    const ticket: Ticket = await this.ticketService.createTicket(new CreateTicketDto(
+    const ticket: Ticket = await this.createTicketUseCase.execute(new CreateTicketDto(
       options.title,
       options.subject,
       options.priority,
