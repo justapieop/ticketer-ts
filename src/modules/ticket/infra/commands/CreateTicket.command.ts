@@ -1,31 +1,28 @@
 import { Command, CommandRunner, Option } from "nest-commander";
 import { Ticket, TicketPriority, TicketStage } from "../../domain/Ticket.domain";
 import Table from "cli-table3";
-import { CreateTicketUseCase } from "../../application/cases/CreateTicket.case";
-import { CreateTicketDto } from "../../application/dtos/CreateTicket.dto";
+import { TicketService } from "../../Ticket.service";
 
 export interface CreateTicketFlags {
   title: string,
   subject: string,
-  priority: TicketPriority,
-  stage: TicketStage,
+  priority: string,
 }
 
 @Command({ name: "create" })
 export class CreateTicketCommand extends CommandRunner {
   public constructor(
-    private readonly createTicketUseCase: CreateTicketUseCase,
+    private readonly ticketService: TicketService,
   ) {
     super();
   }
 
   public async run(passedParams: string[], options: CreateTicketFlags): Promise<void> {
-    const ticket: Ticket = await this.createTicketUseCase.execute(new CreateTicketDto(
+    const ticket: Ticket = await this.ticketService.createTicket(
       options.title,
       options.subject,
-      options.priority,
-      options.stage,
-    ));
+      Ticket.parsePriority(options.priority),
+    );
 
     const table = new Table({
       head: ["ID", "Title", "Subject", "Created", "Priority", "Stage"],
@@ -66,25 +63,14 @@ export class CreateTicketCommand extends CommandRunner {
     flags: "-p, --priority [string]",
     description: "Specify the priority for the ticket",
     required: false,
-    defaultValue: TicketPriority.Standard,
-    choices: Object.keys(TicketPriority).filter(
-      (key) => Number.isNaN(Number(key))
-    ),
+    defaultValue: "Standard",
+    choices: [
+      "Standard",
+      "Priority",
+      "Urgent",
+    ],
   })
-  public parsePriority(val: string): TicketPriority {
-    return TicketPriority[val as keyof typeof TicketPriority];
-  }
-
-  @Option({
-    flags: "-o, --stage [string]",
-    description: "Specify the stage for the ticket",
-    required: false,
-    defaultValue: TicketStage.Created,
-    choices: Object.keys(TicketStage).filter(
-      (key) => Number.isNaN(Number(key))
-    ),
-  })
-  public parseStage(val: string): TicketStage {
-    return TicketStage[val as keyof typeof TicketStage];
+  public parsePriority(val: string): string {
+    return val
   }
 }

@@ -7,10 +7,9 @@ import { CreateTicketCommand } from "./infra/commands/CreateTicket.command";
 import { ListTicketCommand } from "./infra/commands/ListTicket.command";
 import { GetTicketCommand } from "./infra/commands/GetTicket.command";
 import { EditTicketCommand } from "./infra/commands/EditTicket.command";
-import { CreateTicketUseCase } from "./application/cases/CreateTicket.case";
-import { GetTicketUseCase } from "./application/cases/GetTicket.case";
-import { ListTicketsUseCase } from "./application/cases/ListTickets.case";
-import { UpdateTicketUseCase } from "./application/cases/UpdateTicket.case";
+import { NanoIdGenerator } from "./infra/nanoid/NanoId.generator";
+import { TICKET_ID_GENERATOR } from "./application/TicketId.generator";
+import { TicketService } from "./Ticket.service";
 
 @Module({
   imports: [
@@ -22,10 +21,12 @@ import { UpdateTicketUseCase } from "./application/cases/UpdateTicket.case";
       provide: TICKET_REPOSITORY,
       useExisting: TypeOrmTicketRepository,
     },
-    CreateTicketUseCase,
-    GetTicketUseCase,
-    ListTicketsUseCase,
-    UpdateTicketUseCase,
+    NanoIdGenerator,
+    {
+      provide: TICKET_ID_GENERATOR,
+      useExisting: NanoIdGenerator,
+    },
+    TicketService,
     CreateTicketCommand,
     ListTicketCommand,
     GetTicketCommand,

@@ -1,8 +1,7 @@
 import { Command, CommandRunner, Option } from "nest-commander";
 import { Ticket, TicketPriority, TicketStage } from "../../domain/Ticket.domain";
 import Table from "cli-table3";
-import { GetTicketUseCase } from "../../application/cases/GetTicket.case";
-import { TicketNotFoundError } from "../../domain/exceptions/TicketNotFound.error";
+import { TicketService } from "../../Ticket.service";
 
 export interface GetTicketFlags {
   id: string,
@@ -11,23 +10,18 @@ export interface GetTicketFlags {
 @Command({ name: "get", description: "Get a ticket by id", })
 export class GetTicketCommand extends CommandRunner {
   public constructor(
-    private readonly getTicketUseCase: GetTicketUseCase,
+    private readonly ticketService: TicketService,
   ) {
     super();
   }
 
   public async run(passedParams: string[], options: GetTicketFlags): Promise<void> {
-    let ticket: Ticket;
-    try {
-      ticket = await this.getTicketUseCase.execute(options.id);
-    } catch (error) {
-      if (error instanceof TicketNotFoundError) {
-        console.log(`No ticket found with id: ${options.id}`);
-        return;
-      }
-      throw error;
+    let ticket: Ticket | null = await this.ticketService.getTicketById(options.id);
+  
+    if (!ticket) {
+      console.log(`No ticket found with id: ${options.id}`);
+      return;
     }
-
 
     const table = new Table({
       head: ["ID", "Title", "Subject", "Created", "Last Updated", "Priority", "Stage"],

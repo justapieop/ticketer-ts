@@ -1,63 +1,63 @@
 import { Ticket, TicketPriority, TicketStage } from "../../domain/Ticket.domain";
 import { Command, CommandRunner, Option } from "nest-commander";
 import Table from "cli-table3";
-import { GetTicketUseCase } from "../../application/cases/GetTicket.case";
-import { UpdateTicketUseCase } from "../../application/cases/UpdateTicket.case";
-import { UpdateTicketDto } from "../../application/dtos/UpdateTicket.dto";
 import { TicketNotFoundError } from "../../domain/exceptions/TicketNotFound.error";
+import { TicketService } from "../../Ticket.service";
 
 export interface EditTicketFlags {
   id: string,
   title?: string,
   subject?: string,
-  priority?: TicketPriority,
-  stage?: TicketStage,
+  priority?: string,
+  stage?: string,
 }
 
-@Command({ name: "ticket", description: "Edit ticket", })
+@Command({ name: "edit", description: "Edit ticket", })
 export class EditTicketCommand extends CommandRunner {
   public constructor(
-    private readonly getTicketUseCase: GetTicketUseCase,
-    private readonly updateTicketUseCase: UpdateTicketUseCase,
+    private readonly ticketService: TicketService,
   ) {
     super();
   }
   
   public async run(passedParams: string[], options: EditTicketFlags): Promise<void> {
-    let ticket: Ticket;
-    try {
-      ticket = await this.getTicketUseCase.execute(options.id);
-    } catch (error) {
-      if (error instanceof TicketNotFoundError) {
-        console.error("Ticket does not exist");
-        return;
-      }
-      throw error;
+    let ticket: Ticket | null = await this.ticketService.getTicketById(options.id);
+
+    if (!ticket) {
+      console.error("Ticket does not exist");
+      return;
     }
 
-    await this.updateTicketUseCase.execute(
-      new UpdateTicketDto(
-        options.id,
-        options.title,
-        options.subject,
-        options.priority,
-        options.stage,
-      ),
-    );
+    if (options.title) {
+      ticket.setTitle(options.title);
+    }
 
-    const updatedTicket = await this.getTicketUseCase.execute(options.id);
+    if (options.subject) {
+      ticket.setSubject(options.subject);
+    }
+
+    if (options.priority) {
+      ticket.setPriority(Ticket.parsePriority(options.priority));
+    }
+
+    if (options.stage) {
+      ticket.setStage(Ticket.parseStage(options.stage));
+    }
+
+    await this.ticketService.saveTicket(ticket);
+    
     const table = new Table({
       head: ["ID", "Title", "Subject", "Created", "Last Updated", "Priority", "Stage"],
     });
         
     table.push([
-        updatedTicket.id,
-        updatedTicket.title,
-        updatedTicket.subject,
-        new Date(updatedTicket.createdAt).toLocaleString(),
-        updatedTicket.updatedAt ? new Date(updatedTicket.updatedAt).toLocaleString() : "Not updated yet",
-        TicketPriority[updatedTicket.priority] || String(updatedTicket.priority),
-        TicketStage[updatedTicket.stage] || String(updatedTicket.stage),
+        ticket.id,
+        ticket.title,
+        ticket.subject,
+        new Date(ticket.createdAt).toLocaleString(),
+        ticket.updatedAt ? new Date(ticket.updatedAt).toLocaleString() : "Not updated yet",
+        TicketPriority[ticket.priority] || String(ticket.priority),
+        TicketStage[ticket.stage] || String(ticket.stage),
     ]);
         
     console.log(table.toString());
@@ -94,25 +94,29 @@ export class EditTicketCommand extends CommandRunner {
     flags: "-p, --priority [string]",
     description: "Specify the priority for the ticket",
     required: false,
-    defaultValue: TicketPriority.Standard,
-    choices: Object.keys(TicketPriority).filter(
-      (key) => Number.isNaN(Number(key))
-    ),
+    choices: [
+      "Standard",
+      "Priority",
+      "Urgent",
+    ],
   })
-  public parsePriority(val: string): TicketPriority {
-    return TicketPriority[val as keyof typeof TicketPriority];
+  public parsePriority(val: string): string {
+    return val
   }
 
   @Option({
     flags: "-o, --stage [string]",
     description: "Specify the stage for the ticket",
     required: false,
-    defaultValue: TicketStage.Created,
-    choices: Object.keys(TicketStage).filter(
-      (key) => Number.isNaN(Number(key))
-    ),
+    choices: [
+      "Created",
+      "InProgress",
+      "Escalated",
+      "Resolving",
+      "Closed",
+    ],
   })
-  public parseStage(val: string): TicketStage {
-    return TicketStage[val as keyof typeof TicketStage];
+  public parseStage(val: string): string {
+    return val
   }
 }
