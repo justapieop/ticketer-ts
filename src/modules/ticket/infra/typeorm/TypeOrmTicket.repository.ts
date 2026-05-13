@@ -44,8 +44,8 @@ export class TypeOrmTicketRepository implements TicketRepository {
       schema.subject,
       schema.createdAt,
       schema.updatedAt,
-      Ticket.parsePriority(TypeOrmTicketPriority[schema.priority as number]),
-      Ticket.parseStage(TypeOrmTicketStage[schema.stage as number]),
+      Ticket.parsePriority(TypeOrmTicketPriority[schema.priority]),
+      Ticket.parseStage(TypeOrmTicketStage[schema.stage]),
     );
 
     return newTicket;
@@ -60,8 +60,8 @@ export class TypeOrmTicketRepository implements TicketRepository {
       d.subject,
       d.createdAt,
       d.updatedAt,
-      Ticket.parsePriority(TypeOrmTicketPriority[d.priority as number]),
-      Ticket.parseStage(TypeOrmTicketStage[d.stage as number]),
+      Ticket.parsePriority(TypeOrmTicketPriority[d.priority]),
+      Ticket.parseStage(TypeOrmTicketStage[d.stage]),
     ));
   }
 
