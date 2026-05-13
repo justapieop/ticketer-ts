@@ -1,7 +1,8 @@
 import { Command, CommandRunner, Option } from "nest-commander";
-import { Ticket, TicketPriority, TicketStage } from "../../domain/Ticket.domain";
+import { Ticket } from "../../domain/Ticket.domain";
 import Table from "cli-table3";
 import { TicketService } from "../../Ticket.service";
+import { CliTicketPriority, CliTicketStage } from "./common";
 
 export interface GetTicketFlags {
   id: string,
@@ -33,8 +34,8 @@ export class GetTicketCommand extends CommandRunner {
       ticket.subject,
       new Date(ticket.createdAt).toLocaleString(),
       ticket.updatedAt ? new Date(ticket.updatedAt).toLocaleString() : "Not updated yet",
-      TicketPriority[ticket.priority] || String(ticket.priority),
-      TicketStage[ticket.stage] || String(ticket.stage),
+      CliTicketPriority[ticket.priority] || String(ticket.priority),
+      CliTicketStage[ticket.stage] || String(ticket.stage),
     ]);
     
     console.log(table.toString());

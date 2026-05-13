@@ -1,12 +1,13 @@
 import { Command, CommandRunner, Option } from "nest-commander";
-import { Ticket, TicketPriority, TicketStage } from "../../domain/Ticket.domain";
+import { Ticket } from "../../domain/Ticket.domain";
 import Table from "cli-table3";
 import { TicketService } from "../../Ticket.service";
+import { CliTicketPriority, CliTicketStage } from "./common";
 
 export interface CreateTicketFlags {
   title: string,
   subject: string,
-  priority: string,
+  priority: CliTicketPriority,
 }
 
 @Command({ name: "create" })
@@ -21,7 +22,7 @@ export class CreateTicketCommand extends CommandRunner {
     const ticket: Ticket = await this.ticketService.createTicket(
       options.title,
       options.subject,
-      Ticket.parsePriority(options.priority),
+      Ticket.parsePriority(CliTicketPriority[options.priority]),
     );
 
     const table = new Table({
@@ -33,8 +34,8 @@ export class CreateTicketCommand extends CommandRunner {
       ticket.title,
       ticket.subject,
       new Date(ticket.createdAt).toLocaleString(),
-      TicketPriority[ticket.priority] || String(ticket.priority),
-      TicketStage[ticket.stage] || String(ticket.stage),
+      CliTicketPriority[ticket.priority] || String(ticket.priority),
+      CliTicketStage[ticket.stage] || String(ticket.stage),
     ]);
 
     console.log("Ticket created successfully:");
@@ -63,14 +64,12 @@ export class CreateTicketCommand extends CommandRunner {
     flags: "-p, --priority [string]",
     description: "Specify the priority for the ticket",
     required: false,
-    defaultValue: "Standard",
-    choices: [
-      "Standard",
-      "Priority",
-      "Urgent",
-    ],
+    defaultValue: CliTicketPriority.Standard,
+    choices: Object.keys(CliTicketPriority).filter(
+      (k) => Number.isNaN(Number(k))
+    ),
   })
-  public parsePriority(val: string): string {
-    return val
+  public parsePriority(val: string): CliTicketPriority {
+    return CliTicketPriority[val as keyof typeof CliTicketPriority];
   }
 }
