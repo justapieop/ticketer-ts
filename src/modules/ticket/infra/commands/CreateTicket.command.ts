@@ -1,31 +1,29 @@
 import { Command, CommandRunner, Option } from "nest-commander";
-import { Ticket, TicketPriority, TicketStage } from "../../domain/Ticket.domain";
+import { Ticket } from "../../domain/Ticket.domain";
 import Table from "cli-table3";
-import { CreateTicketUseCase } from "../../application/cases/CreateTicket.case";
-import { CreateTicketDto } from "../../application/dtos/CreateTicket.dto";
+import { TicketService } from "../../Ticket.service";
+import { CliTicketPriority, CliTicketStage } from "./common";
 
 export interface CreateTicketFlags {
   title: string,
   subject: string,
-  priority: TicketPriority,
-  stage: TicketStage,
+  priority: CliTicketPriority,
 }
 
 @Command({ name: "create" })
 export class CreateTicketCommand extends CommandRunner {
   public constructor(
-    private readonly createTicketUseCase: CreateTicketUseCase,
+    private readonly ticketService: TicketService,
   ) {
     super();
   }
 
   public async run(passedParams: string[], options: CreateTicketFlags): Promise<void> {
-    const ticket: Ticket = await this.createTicketUseCase.execute(new CreateTicketDto(
+    const ticket: Ticket = await this.ticketService.createTicket(
       options.title,
       options.subject,
-      options.priority,
-      options.stage,
-    ));
+      Ticket.parsePriority(CliTicketPriority[options.priority]),
+    );
 
     const table = new Table({
       head: ["ID", "Title", "Subject", "Created", "Priority", "Stage"],
@@ -36,8 +34,8 @@ export class CreateTicketCommand extends CommandRunner {
       ticket.title,
       ticket.subject,
       new Date(ticket.createdAt).toLocaleString(),
-      TicketPriority[ticket.priority] || String(ticket.priority),
-      TicketStage[ticket.stage] || String(ticket.stage),
+      CliTicketPriority[ticket.priority] || String(ticket.priority),
+      CliTicketStage[ticket.stage] || String(ticket.stage),
     ]);
 
     console.log("Ticket created successfully:");
@@ -66,25 +64,12 @@ export class CreateTicketCommand extends CommandRunner {
     flags: "-p, --priority [string]",
     description: "Specify the priority for the ticket",
     required: false,
-    defaultValue: TicketPriority.Standard,
-    choices: Object.keys(TicketPriority).filter(
-      (key) => Number.isNaN(Number(key))
+    defaultValue: CliTicketPriority.Standard,
+    choices: Object.keys(CliTicketPriority).filter(
+      (k) => Number.isNaN(Number(k))
     ),
   })
-  public parsePriority(val: string): TicketPriority {
-    return TicketPriority[val as keyof typeof TicketPriority];
-  }
-
-  @Option({
-    flags: "-o, --stage [string]",
-    description: "Specify the stage for the ticket",
-    required: false,
-    defaultValue: TicketStage.Created,
-    choices: Object.keys(TicketStage).filter(
-      (key) => Number.isNaN(Number(key))
-    ),
-  })
-  public parseStage(val: string): TicketStage {
-    return TicketStage[val as keyof typeof TicketStage];
+  public parsePriority(val: string): CliTicketPriority {
+    return CliTicketPriority[val as keyof typeof CliTicketPriority];
   }
 }
