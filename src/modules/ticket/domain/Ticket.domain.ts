@@ -1,3 +1,6 @@
+import { InvalidPriorityInput } from "./exceptions/InvalidPriorityInput.error";
+import { InvalidStageInput } from "./exceptions/InvalidStageInput.error";
+
 export class Ticket {
   public constructor(
     public readonly id: string,
@@ -35,11 +38,51 @@ export class Ticket {
   }
 
   public static parsePriority(priority: string): TicketPriority {
-    return TicketPriority[priority as keyof typeof TicketPriority];
+    switch (priority.toLowerCase()) {
+      case "standard": {
+        return TicketPriority.Standard;
+      }
+      
+      case "priority": {
+        return TicketPriority.Priority;
+      }
+      
+      case "urgent": {
+        return TicketPriority.Urgent;
+      }
+        
+      default: {
+        throw new InvalidPriorityInput(priority);
+      }
+    }
   }
 
   public static parseStage(stage: string): TicketStage {
-    return TicketStage[stage as keyof typeof TicketStage];
+    switch (stage.toLowerCase()) {
+      case "created": {
+        return TicketStage.Created;
+      }
+        
+      case "inprogress": {
+        return TicketStage.InProgress;
+      }
+        
+      case "escalated": {
+        return TicketStage.Escalated;
+      }
+        
+      case "resolving": {
+        return TicketStage.Resolving;
+      }
+        
+      case "closed": {
+        return TicketStage.Closed;
+      }
+
+      default: {
+        throw new InvalidStageInput(stage);
+      }
+    }
   }
 }
 
