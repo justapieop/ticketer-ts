@@ -13,37 +13,11 @@ export class Ticket {
     public stage: TicketStage,
   ) { }
   
-  public setTitle(title: string): Ticket {
-    this.title = title;
-    this.setLastUpdateTime();
-    return this;
+  public edit(): TicketEditor {
+    return new TicketEditor(this);
   }
 
-  public setSubject(subject: string): Ticket {
-    this.subject = subject;
-    this.setLastUpdateTime();
-    return this;
-  }
-
-  public setPriority(priority: TicketPriority): Ticket {
-    this.priority = priority;
-    this.setLastUpdateTime();
-    return this;
-  }
-
-  public setStage(stage: TicketStage): Ticket {
-    Ticket.validateStageTransition(this.stage, stage);
-    this.stage = stage;
-    this.setLastUpdateTime();
-    return this;
-  }
-
-  public setLastUpdateTime(): Ticket {
-    this.updatedAt = new Date();
-    return this;
-  }
-
-  private static validateStageTransition(from: TicketStage, to: TicketStage): void {
+  public static validateStageTransition(from: TicketStage, to: TicketStage): void {
     if (from === to) {
       return;
     }
@@ -107,6 +81,41 @@ export class Ticket {
         throw new InvalidStageInput(stage);
       }
     }
+  }
+}
+
+export class TicketEditor {
+  public constructor(
+    private readonly ticket: Ticket,
+  ) {}
+
+  public setTitle(title: string): TicketEditor {
+    this.ticket.title = title;
+    this.touch();
+    return this;
+  }
+
+  public setSubject(subject: string): TicketEditor {
+    this.ticket.subject = subject;
+    this.touch();
+    return this;
+  }
+
+  public setPriority(priority: TicketPriority): TicketEditor {
+    this.ticket.priority = priority;
+    this.touch();
+    return this;
+  }
+
+  public setStage(stage: TicketStage): TicketEditor {
+    Ticket.validateStageTransition(this.ticket.stage, stage);
+    this.ticket.stage = stage;
+    this.touch();
+    return this;
+  }
+
+  private touch(): void {
+    this.ticket.updatedAt = new Date();
   }
 }
 
