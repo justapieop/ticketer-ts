@@ -1,15 +1,15 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { TypeOrmTicketSchema } from "./infra/typeorm/TypeOrmTicket.schema";
-import { TICKET_REPOSITORY } from "./application/Ticket.repository";
-import { TypeOrmTicketRepository } from "./infra/typeorm/TypeOrmTicket.repository";
-import { CreateTicketCommand } from "./infra/commands/CreateTicket.command";
-import { ListTicketCommand } from "./infra/commands/ListTicket.command";
-import { GetTicketCommand } from "./infra/commands/GetTicket.command";
-import { EditTicketCommand } from "./infra/commands/EditTicket.command";
-import { NanoIdGenerator } from "./infra/nanoid/NanoId.generator";
-import { TICKET_ID_GENERATOR } from "./application/TicketId.generator";
 import { TicketService } from "./Ticket.service";
+import { TICKET_REPOSITORY } from "src/app/ticket/Ticket.repository";
+import { TICKET_ID_GENERATOR } from "src/app/ticket/TicketId.generator";
+import { CreateTicketCommand } from "src/infra/ticket/commands/CreateTicket.command";
+import { EditTicketCommand } from "src/infra/ticket/commands/EditTicket.command";
+import { GetTicketCommand } from "src/infra/ticket/commands/GetTicket.command";
+import { ListTicketCommand } from "src/infra/ticket/commands/ListTicket.command";
+import { NanoIdGenerator } from "src/infra/ticket/nanoid/NanoId.generator";
+import { TypeOrmTicketRepository } from "src/infra/ticket/typeorm/TypeOrmTicket.repository";
+import { TypeOrmTicketSchema } from "src/infra/ticket/typeorm/TypeOrmTicket.schema";
 
 @Module({
   imports: [

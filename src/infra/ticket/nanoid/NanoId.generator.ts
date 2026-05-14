@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { TicketIdGenerator } from "../../application/TicketId.generator";
 import { nanoid } from "nanoid";
+import { TicketIdGenerator } from "src/app/ticket/TicketId.generator";
 
 @Injectable()
 export class NanoIdGenerator implements TicketIdGenerator {

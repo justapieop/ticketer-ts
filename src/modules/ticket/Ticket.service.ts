@@ -1,7 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { TICKET_ID_GENERATOR, type TicketIdGenerator } from "./application/TicketId.generator";
-import { TICKET_REPOSITORY, type TicketRepository } from "./application/Ticket.repository";
-import { Ticket, TicketPriority, TicketStage } from "./domain/Ticket.domain";
+import { Ticket, TicketPriority, TicketStage } from "../../domain/ticket/Ticket.domain";
+import { TICKET_REPOSITORY, type TicketRepository } from "src/app/ticket/Ticket.repository";
+import { TICKET_ID_GENERATOR, type TicketIdGenerator } from "src/app/ticket/TicketId.generator";
 
 @Injectable()
 export class TicketService {

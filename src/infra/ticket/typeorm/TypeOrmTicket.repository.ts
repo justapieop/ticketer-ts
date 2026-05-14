@@ -1,9 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { TicketRepository } from "../../application/Ticket.repository";
 import { TypeOrmTicketPriority, TypeOrmTicketSchema, TypeOrmTicketStage } from "./TypeOrmTicket.schema";
-import { Ticket, TicketPriority, TicketStage } from "../../domain/Ticket.domain";
+import { TicketRepository } from "src/app/ticket/Ticket.repository";
+import { Ticket, TicketPriority, TicketStage } from "src/domain/ticket/Ticket.domain";
 
 @Injectable()
 export class TypeOrmTicketRepository implements TicketRepository {

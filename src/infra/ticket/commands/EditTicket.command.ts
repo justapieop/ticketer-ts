@@ -1,8 +1,8 @@
-import { Ticket } from "../../domain/Ticket.domain";
 import { Command, CommandRunner, Option } from "nest-commander";
 import Table from "cli-table3";
-import { TicketService } from "../../Ticket.service";
 import { CliTicketPriority, CliTicketStage } from "./common";
+import { Ticket } from "src/domain/ticket/Ticket.domain";
+import { TicketService } from "src/modules/ticket/Ticket.service";
 
 export interface EditTicketFlags {
   id: string,
