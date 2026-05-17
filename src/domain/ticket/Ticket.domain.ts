@@ -1,5 +1,6 @@
 import { InvalidPriorityInput } from "./exceptions/InvalidPriorityInput.error";
 import { InvalidStageInput } from "./exceptions/InvalidStageInput.error";
+import { InvalidTicketDataError } from "./exceptions/InvalidTicketData.error";
 
 export class Ticket {
   public constructor(
@@ -12,29 +13,26 @@ export class Ticket {
     public stage: TicketStage,
   ) { }
   
-  public setTitle(title: string): Ticket {
-    this.title = title;
-    return this;
+  public edit(): TicketEditor {
+    return new TicketEditor(this);
   }
 
-  public setSubject(subject: string): Ticket {
-    this.subject = subject;
-    return this;
-  }
+  public static validateStageTransition(from: TicketStage, to: TicketStage): void {
+    if (from === to) {
+      return;
+    }
 
-  public setPriority(priority: TicketPriority): Ticket {
-    this.priority = priority;
-    return this;
-  }
+    const allowed: Record<TicketStage, TicketStage[]> = {
+      [TicketStage.Created]: [TicketStage.InProgress],
+      [TicketStage.InProgress]: [TicketStage.Escalated, TicketStage.Resolving],
+      [TicketStage.Escalated]: [TicketStage.Resolving],
+      [TicketStage.Resolving]: [TicketStage.Closed],
+      [TicketStage.Closed]: [],
+    };
 
-  public setStage(stage: TicketStage): Ticket {
-    this.stage = stage;
-    return this;
-  }
-
-  public setLastUpdateTime(): Ticket {
-    this.updatedAt = new Date();
-    return this;
+    if (!allowed[from]?.includes(to)) {
+      throw new InvalidTicketDataError("Invalid ticket stage transition.");
+    }
   }
 
   public static parsePriority(priority: string): TicketPriority {
@@ -83,6 +81,41 @@ export class Ticket {
         throw new InvalidStageInput(stage);
       }
     }
+  }
+}
+
+export class TicketEditor {
+  public constructor(
+    private readonly ticket: Ticket,
+  ) {}
+
+  public setTitle(title: string): TicketEditor {
+    this.ticket.title = title;
+    this.touch();
+    return this;
+  }
+
+  public setSubject(subject: string): TicketEditor {
+    this.ticket.subject = subject;
+    this.touch();
+    return this;
+  }
+
+  public setPriority(priority: TicketPriority): TicketEditor {
+    this.ticket.priority = priority;
+    this.touch();
+    return this;
+  }
+
+  public setStage(stage: TicketStage): TicketEditor {
+    Ticket.validateStageTransition(this.ticket.stage, stage);
+    this.ticket.stage = stage;
+    this.touch();
+    return this;
+  }
+
+  private touch(): void {
+    this.ticket.updatedAt = new Date();
   }
 }
 

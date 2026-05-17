@@ -1,8 +1,8 @@
-import { Ticket } from "../../domain/Ticket.domain";
 import { Command, CommandRunner, Option } from "nest-commander";
 import Table from "cli-table3";
-import { TicketService } from "../../Ticket.service";
 import { CliTicketPriority, CliTicketStage } from "./common";
+import { Ticket, TicketEditor } from "src/domain/ticket/Ticket.domain";
+import { TicketService } from "src/modules/ticket/Ticket.service";
 
 export interface EditTicketFlags {
   id: string,
@@ -28,20 +28,22 @@ export class EditTicketCommand extends CommandRunner {
       return;
     }
 
+    const editor: TicketEditor = ticket.edit();
+
     if (options.title) {
-      ticket.setTitle(options.title);
+      editor.setTitle(options.title);
     }
 
     if (options.subject) {
-      ticket.setSubject(options.subject);
+      editor.setSubject(options.subject);
     }
 
     if (options.priority) {
-      ticket.setPriority(Ticket.parsePriority(CliTicketPriority[options.priority]));
+      editor.setPriority(Ticket.parsePriority(CliTicketPriority[options.priority]));
     }
 
     if (options.stage) {
-      ticket.setStage(Ticket.parseStage(CliTicketStage[options.stage]));
+      editor.setStage(Ticket.parseStage(CliTicketStage[options.stage]));
     }
 
     await this.ticketService.saveTicket(ticket);

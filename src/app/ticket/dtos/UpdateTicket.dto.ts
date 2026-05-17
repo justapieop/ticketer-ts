@@ -1,4 +1,4 @@
-import { TicketPriority, TicketStage } from "../../domain/Ticket.domain";
+import { TicketPriority, TicketStage } from "src/domain/ticket/Ticket.domain";
 
 export class UpdateTicketDto {
   constructor(
