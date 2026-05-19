@@ -1,8 +1,9 @@
+import { Inject } from "@nestjs/common";
 import { Command, CommandRunner, Option } from "nest-commander";
 import Table from "cli-table3";
-import { fromDomainPriority, fromDomainStage } from "./common";
-import { Ticket } from "src/domain/ticket/Ticket.domain";
-import { TicketService } from "src/app/ticket/Ticket.service";
+
+import { TicketNotFoundError } from "src/domain/ticket/exceptions/TicketNotFound.error";
+import { TICKET_USE_CASES, type TicketUseCases } from "src/app/ticket/ports/TicketUseCases.port";
 
 export interface GetTicketFlags {
   id: string,
@@ -11,34 +12,37 @@ export interface GetTicketFlags {
 @Command({ name: "get", description: "Get a ticket by id", })
 export class GetTicketCommand extends CommandRunner {
   public constructor(
-    private readonly ticketService: TicketService,
+    @Inject(TICKET_USE_CASES) private readonly ticketUseCases: TicketUseCases,
   ) {
     super();
   }
 
   public async run(passedParams: string[], options: GetTicketFlags): Promise<void> {
-    let ticket: Ticket | null = await this.ticketService.getTicketById(options.id);
-  
-    if (!ticket) {
-      console.log(`No ticket found with id: ${options.id}`);
-      return;
-    }
+    try {
+      const ticket = await this.ticketUseCases.getTicketById(options.id);
 
-    const table = new Table({
-      head: ["ID", "Title", "Subject", "Created", "Last Updated", "Priority", "Stage"],
-    });
-    
-    table.push([
-      ticket.id,
-      ticket.title,
-      ticket.subject,
-      new Date(ticket.createdAt).toLocaleString(),
-      ticket.updatedAt ? new Date(ticket.updatedAt).toLocaleString() : "Not updated yet",
-      fromDomainPriority(ticket.priority),
-      fromDomainStage(ticket.stage),
-    ]);
-    
-    console.log(table.toString());
+      const table = new Table({
+        head: ["ID", "Title", "Subject", "Created", "Last Updated", "Priority", "Stage"],
+      });
+      
+      table.push([
+        ticket.id,
+        ticket.title,
+        ticket.subject,
+        ticket.createdAt.toLocaleString(),
+        ticket.updatedAt ? ticket.updatedAt.toLocaleString() : "Not updated yet",
+        ticket.priority,
+        ticket.stage,
+      ]);
+      
+      console.log(table.toString());
+    } catch (error) {
+      if (error instanceof TicketNotFoundError) {
+        console.error(`Error: ${error.message}`);
+        return;
+      }
+      throw error;
+    }
   }
 
   @Option({
@@ -46,7 +50,7 @@ export class GetTicketCommand extends CommandRunner {
     description: "Specify the id of the ticket to get",
     required: true,
   })
-  private parseId(val: string): string {
+  public parseId(val: string): string {
     return val;
   }
 }

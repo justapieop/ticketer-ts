@@ -1,19 +1,19 @@
+import { Inject } from "@nestjs/common";
 import { Command, CommandRunner } from "nest-commander";
 import Table, { type Table as TableType, } from "cli-table3";
-import { fromDomainPriority, fromDomainStage } from "./common";
-import { Ticket } from "src/domain/ticket/Ticket.domain";
-import { TicketService } from "src/app/ticket/Ticket.service";
+
+import { TICKET_USE_CASES, type TicketUseCases } from "src/app/ticket/ports/TicketUseCases.port";
 
 @Command({ name: "list", description: "List all tickets", })
 export class ListTicketCommand extends CommandRunner {
   public constructor(
-    private readonly ticketService: TicketService,
+    @Inject(TICKET_USE_CASES) private readonly ticketUseCases: TicketUseCases,
   ) {
     super();
   }
 
   public async run(passedParams: string[], options?: Record<string, any>): Promise<void> {
-    const tickets: Ticket[] = await this.ticketService.listTickets();
+    const tickets = await this.ticketUseCases.listTickets();
 
     if (tickets.length === 0) {
       console.log("No tickets found.");
@@ -29,10 +29,10 @@ export class ListTicketCommand extends CommandRunner {
         ticket.id,
         ticket.title,
         ticket.subject,
-        new Date(ticket.createdAt).toLocaleString(),
-        ticket.updatedAt ? new Date(ticket.updatedAt).toLocaleString() : "Not updated yet",
-        fromDomainPriority(ticket.priority),
-        fromDomainStage(ticket.stage),
+        ticket.createdAt.toLocaleString(),
+        ticket.updatedAt ? ticket.updatedAt.toLocaleString() : "Not updated yet",
+        ticket.priority,
+        ticket.stage,
       ]);
     }
 

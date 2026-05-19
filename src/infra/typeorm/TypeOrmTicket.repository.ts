@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { TypeOrmTicketPriority, TypeOrmTicketSchema, TypeOrmTicketStage } from "./TypeOrmTicket.schema";
-import { TicketRepository } from "src/app/ticket/Ticket.repository";
+import { TicketRepository } from "src/domain/ticket/ports/TicketRepository.port";
 import { Ticket, TicketPriority, TicketStage } from "src/domain/ticket/Ticket.domain";
 
 @Injectable()
@@ -26,7 +26,7 @@ export class TypeOrmTicketRepository implements TicketRepository {
     await this.ticketRepository.createQueryBuilder()
       .insert()
       .values(schema)
-      .orUpdate(["title", "subject", "priority", "stage"], ["id"])
+      .orUpdate(["title", "subject", "priority", "stage", "updatedAt"], ["id"])
       .execute();
     return ticket;
   }
@@ -38,12 +38,12 @@ export class TypeOrmTicketRepository implements TicketRepository {
       return null;
     }
 
-    const newTicket: Ticket = new Ticket(
+    const newTicket: Ticket = Ticket.reconstitute(
       schema.id,
       schema.title,
       schema.subject,
-      schema.createdAt,
-      schema.updatedAt,
+      new Date(schema.createdAt),
+      schema.updatedAt ? new Date(schema.updatedAt) : null,
       this.toDomainPriority(schema.priority),
       this.toDomainStage(schema.stage),
     );
@@ -54,12 +54,12 @@ export class TypeOrmTicketRepository implements TicketRepository {
   public async listTicket(): Promise<Ticket[]> {
     const data: TypeOrmTicketSchema[] = await this.ticketRepository.find();
 
-    return data.map((d) => new Ticket(
+    return data.map((d) => Ticket.reconstitute(
       d.id,
       d.title,
       d.subject,
-      d.createdAt,
-      d.updatedAt,
+      new Date(d.createdAt),
+      d.updatedAt ? new Date(d.updatedAt) : null,
       this.toDomainPriority(d.priority),
       this.toDomainStage(d.stage),
     ));
@@ -74,8 +74,6 @@ export class TypeOrmTicketRepository implements TicketRepository {
       case TicketPriority.Urgent:
         return TypeOrmTicketPriority.Urgent;
     }
-
-    throw new Error(`Unknown ticket priority: ${priority}`);
   }
 
   private toSchemaStage(stage: TicketStage): TypeOrmTicketStage {
@@ -92,7 +90,6 @@ export class TypeOrmTicketRepository implements TicketRepository {
         return TypeOrmTicketStage.Closed;
     }
 
-    throw new Error(`Unknown ticket stage: ${stage}`);
   }
 
   private toDomainPriority(priority: TypeOrmTicketPriority | string | number): TicketPriority {

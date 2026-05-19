@@ -1,5 +1,6 @@
 import { TicketService } from './Ticket.service';
 import { Ticket, TicketPriority, TicketStage } from '../../domain/ticket/Ticket.domain';
+import { TicketNotFoundError } from '../../domain/ticket/exceptions/TicketNotFound.error';
 import { CreateTicketInput } from './inputs/CreateTicket.input';
 import { EditTicketInput } from './inputs/EditTicket.input';
 
@@ -27,7 +28,7 @@ describe('TicketService', () => {
 
   test('listTickets proxies to repository', async () => {
     const mockIdGen = { generate: jest.fn() };
-    const sample = [new Ticket('1','a','b', new Date(), null, TicketPriority.Standard, TicketStage.Created)];
+    const sample = [Ticket.reconstitute('1', 'a', 'b', new Date(), null, TicketPriority.Standard, TicketStage.Created)];
     const mockRepo = { save: jest.fn(), getTicketById: jest.fn(), listTicket: jest.fn().mockResolvedValue(sample) } as any;
 
     const svc = new TicketService(mockIdGen as any, mockRepo as any);
@@ -40,7 +41,7 @@ describe('TicketService', () => {
 
   test('editTicket applies changes and saves through repository', async () => {
     const mockIdGen = { generate: jest.fn() };
-    const ticket = new Ticket('1', 'old', 'subject', new Date(0), null, TicketPriority.Priority, TicketStage.Created);
+    const ticket = Ticket.reconstitute('1', 'old', 'subject', new Date(0), null, TicketPriority.Priority, TicketStage.Created);
     const mockRepo = {
       save: jest.fn().mockImplementation(async (t: Ticket) => t),
       getTicketById: jest.fn().mockResolvedValue(ticket),
@@ -65,7 +66,7 @@ describe('TicketService', () => {
     expect(mockRepo.save).toHaveBeenCalledWith(ticket);
   });
 
-  test('editTicket returns null when ticket is missing', async () => {
+  test('editTicket throws TicketNotFoundError when ticket is missing', async () => {
     const mockIdGen = { generate: jest.fn() };
     const mockRepo = {
       save: jest.fn(),
@@ -75,13 +76,11 @@ describe('TicketService', () => {
 
     const svc = new TicketService(mockIdGen as any, mockRepo as any);
 
-    const result = await svc.editTicket(new EditTicketInput('missing', 'new'));
-
-    expect(result).toBeNull();
+    await expect(svc.editTicket(new EditTicketInput('missing', 'new'))).rejects.toThrow(TicketNotFoundError);
     expect(mockRepo.save).not.toHaveBeenCalled();
   });
 
-  test('getTicketById returns null when ticket is missing', async () => {
+  test('getTicketById throws TicketNotFoundError when ticket is missing', async () => {
     const mockIdGen = { generate: jest.fn() };
     const mockRepo = {
       save: jest.fn(),
@@ -91,9 +90,7 @@ describe('TicketService', () => {
 
     const svc = new TicketService(mockIdGen as any, mockRepo as any);
 
-    const result = await svc.getTicketById('missing');
-
-    expect(result).toBeNull();
+    await expect(svc.getTicketById('missing')).rejects.toThrow(TicketNotFoundError);
     expect(mockRepo.getTicketById).toHaveBeenCalledWith('missing');
   });
 });
