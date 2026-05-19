@@ -80,4 +80,20 @@ describe('TicketService', () => {
     expect(result).toBeNull();
     expect(mockRepo.save).not.toHaveBeenCalled();
   });
+
+  test('getTicketById returns null when ticket is missing', async () => {
+    const mockIdGen = { generate: jest.fn() };
+    const mockRepo = {
+      save: jest.fn(),
+      getTicketById: jest.fn().mockResolvedValue(null),
+      listTicket: jest.fn(),
+    } as any;
+
+    const svc = new TicketService(mockIdGen as any, mockRepo as any);
+
+    const result = await svc.getTicketById('missing');
+
+    expect(result).toBeNull();
+    expect(mockRepo.getTicketById).toHaveBeenCalledWith('missing');
+  });
 });

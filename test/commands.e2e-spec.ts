@@ -67,4 +67,13 @@ describe('Commands E2E', () => {
     expect(spy).toHaveBeenCalled();
     spy.mockRestore();
   });
+
+  test('get prints message for missing ticket', async () => {
+    const getCmd = moduleRef.get(GetTicketCommand);
+
+    const spy = jest.spyOn(console, 'log').mockImplementation(() => {});
+    await getCmd.run([], { id: 'missing-id' });
+    expect(spy).toHaveBeenCalledWith('No ticket found with id: missing-id');
+    spy.mockRestore();
+  });
 });
