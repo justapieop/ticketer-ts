@@ -1,36 +1,33 @@
+import { Inject } from "@nestjs/common";
 import { Command, CommandRunner, Option } from "nest-commander";
 import Table from "cli-table3";
 import {
-  CLI_TICKET_PRIORITY_CHOICES,
-  CliTicketPriority,
-  fromDomainPriority,
-  fromDomainStage,
-  parseCliTicketPriority,
-  toDomainPriority,
+  TICKET_PRIORITY_CHOICES,
+  parseTicketPriority,
 } from "./common";
 import { CreateTicketInput } from "src/app/ticket/inputs/CreateTicket.input";
-import { Ticket } from "src/domain/ticket/Ticket.domain";
-import { TicketService } from "src/app/ticket/Ticket.service";
+import { TicketPriority } from "src/domain/ticket/Ticket.domain";
+import { TICKET_USE_CASES, type TicketUseCases } from "src/app/ticket/ports/TicketUseCases.port";
 
 export interface CreateTicketFlags {
   title: string,
   subject: string,
-  priority: CliTicketPriority,
+  priority: TicketPriority,
 }
 
-@Command({ name: "create" })
+@Command({ name: "create", description: "Create a new ticket" })
 export class CreateTicketCommand extends CommandRunner {
   public constructor(
-    private readonly ticketService: TicketService,
+    @Inject(TICKET_USE_CASES) private readonly ticketUseCases: TicketUseCases,
   ) {
     super();
   }
 
   public async run(passedParams: string[], options: CreateTicketFlags): Promise<void> {
-    const ticket: Ticket = await this.ticketService.createTicket(new CreateTicketInput(
+    const ticket = await this.ticketUseCases.createTicket(new CreateTicketInput(
       options.title,
       options.subject,
-      options.priority !== undefined ? toDomainPriority(options.priority) : undefined,
+      options.priority,
     ));
 
     const table = new Table({
@@ -41,9 +38,9 @@ export class CreateTicketCommand extends CommandRunner {
       ticket.id,
       ticket.title,
       ticket.subject,
-      new Date(ticket.createdAt).toLocaleString(),
-      fromDomainPriority(ticket.priority),
-      fromDomainStage(ticket.stage),
+      ticket.createdAt.toLocaleString(),
+      ticket.priority,
+      ticket.stage,
     ]);
 
     console.log("Ticket created successfully:");
@@ -72,10 +69,10 @@ export class CreateTicketCommand extends CommandRunner {
     flags: "-p, --priority [string]",
     description: "Specify the priority for the ticket",
     required: false,
-    defaultValue: CliTicketPriority.Standard,
-    choices: CLI_TICKET_PRIORITY_CHOICES,
+    defaultValue: TicketPriority.Standard,
+    choices: TICKET_PRIORITY_CHOICES,
   })
-  public parsePriority(val: string): CliTicketPriority {
-    return parseCliTicketPriority(val);
+  public parsePriority(val: string): TicketPriority {
+    return parseTicketPriority(val);
   }
 }

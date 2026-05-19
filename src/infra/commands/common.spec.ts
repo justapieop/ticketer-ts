@@ -1,33 +1,32 @@
+import { TicketPriority, TicketStage } from "src/domain/ticket/Ticket.domain";
 import {
-  CliTicketPriority,
-  CliTicketStage,
-  parseCliTicketPriority,
-  parseCliTicketStage,
+  parseTicketPriority,
+  parseTicketStage,
 } from "./common";
 
 describe("CLI parsing", () => {
-  test("parseCliTicketPriority is case-insensitive", () => {
-    expect(parseCliTicketPriority("STANDARD")).toBe(CliTicketPriority.Standard);
-    expect(parseCliTicketPriority("priority")).toBe(CliTicketPriority.Priority);
-    expect(parseCliTicketPriority("Urgent")).toBe(CliTicketPriority.Urgent);
+  test("parseTicketPriority is case-insensitive", () => {
+    expect(parseTicketPriority("STANDARD")).toBe(TicketPriority.Standard);
+    expect(parseTicketPriority("priority")).toBe(TicketPriority.Priority);
+    expect(parseTicketPriority("Urgent")).toBe(TicketPriority.Urgent);
   });
 
-  test("parseCliTicketStage accepts separators and casing", () => {
-    expect(parseCliTicketStage("inprogress")).toBe(CliTicketStage.InProgress);
-    expect(parseCliTicketStage("In_Progress")).toBe(CliTicketStage.InProgress);
-    expect(parseCliTicketStage("in-progress")).toBe(CliTicketStage.InProgress);
-    expect(parseCliTicketStage("in progress")).toBe(CliTicketStage.InProgress);
+  test("parseTicketStage accepts separators and casing", () => {
+    expect(parseTicketStage("inprogress")).toBe(TicketStage.InProgress);
+    expect(parseTicketStage("In_Progress")).toBe(TicketStage.InProgress);
+    expect(parseTicketStage("in-progress")).toBe(TicketStage.InProgress);
+    expect(parseTicketStage("in progress")).toBe(TicketStage.InProgress);
   });
 
-  test("parseCliTicketPriority throws on unknown input", () => {
-    expect(() => parseCliTicketPriority("unknown")).toThrow(
-      "Unknown CLI ticket priority",
+  test("parseTicketPriority throws on unknown input", () => {
+    expect(() => parseTicketPriority("unknown")).toThrow(
+      "Unknown ticket priority",
     );
   });
 
-  test("parseCliTicketStage throws on unknown input", () => {
-    expect(() => parseCliTicketStage("invalid")).toThrow(
-      "Unknown CLI ticket stage",
+  test("parseTicketStage throws on unknown input", () => {
+    expect(() => parseTicketStage("invalid")).toThrow(
+      "Unknown ticket stage",
     );
   });
 });

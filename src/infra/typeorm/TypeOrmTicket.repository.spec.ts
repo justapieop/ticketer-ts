@@ -27,7 +27,7 @@ describe('TypeOrmTicketRepository', () => {
   });
 
   test('save creates schema and executes upsert, returns ticket', async () => {
-    const ticket = new Ticket('t-1', 'title', 'subject', new Date(0), null, TicketPriority.Urgent, TicketStage.Resolving);
+    const ticket = Ticket.reconstitute('t-1', 'title', 'subject', new Date(0), null, TicketPriority.Urgent, TicketStage.Resolving);
 
     await expect(repo.save(ticket)).resolves.toBe(ticket);
 

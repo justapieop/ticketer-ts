@@ -1,24 +1,23 @@
-import { Ticket, TicketPriority, TicketStage } from "src/domain/ticket/Ticket.domain";
-import { type TicketRepository } from "src/app/ticket/Ticket.repository";
-import { type TicketIdGenerator } from "src/app/ticket/TicketId.generator";
+import { Ticket } from "src/domain/ticket/Ticket.domain";
+import { TicketNotFoundError } from "src/domain/ticket/exceptions/TicketNotFound.error";
+import { type TicketRepository } from "src/domain/ticket/ports/TicketRepository.port";
+import { type TicketIdGenerator } from "src/domain/ticket/ports/TicketIdGenerator.port";
 import { CreateTicketInput } from "src/app/ticket/inputs/CreateTicket.input";
 import { EditTicketInput } from "src/app/ticket/inputs/EditTicket.input";
+import { type TicketUseCases } from "src/app/ticket/ports/TicketUseCases.port";
 
-export class TicketService {
+export class TicketService implements TicketUseCases {
   public constructor(
     private readonly ticketIdGenerator: TicketIdGenerator,
     private readonly ticketRepository: TicketRepository,
   ) {}
 
   public async createTicket(input: CreateTicketInput): Promise<Ticket> {
-    const ticket: Ticket = new Ticket(
+    const ticket = Ticket.create(
       this.ticketIdGenerator.generate(),
       input.title,
       input.subject,
-      new Date(),
-      null,
-      input.priority ?? TicketPriority.Standard,
-      TicketStage.Created,
+      input.priority,
     );
 
     await this.ticketRepository.save(ticket);
@@ -26,15 +25,11 @@ export class TicketService {
     return ticket;
   }
 
-  public async saveTicket(ticket: Ticket): Promise<void> {
-    await this.ticketRepository.save(ticket);
-  }
-
-  public async editTicket(input: EditTicketInput): Promise<Ticket | null> {
+  public async editTicket(input: EditTicketInput): Promise<Ticket> {
     const ticket: Ticket | null = await this.ticketRepository.getTicketById(input.id);
 
     if (!ticket) {
-      return null;
+      throw new TicketNotFoundError(input.id);
     }
 
     const editor = ticket.edit();
@@ -64,7 +59,13 @@ export class TicketService {
     return await this.ticketRepository.listTicket();
   }
 
-  public async getTicketById(id: string): Promise<Ticket | null> {
-    return await this.ticketRepository.getTicketById(id);
+  public async getTicketById(id: string): Promise<Ticket> {
+    const ticket = await this.ticketRepository.getTicketById(id);
+
+    if (!ticket) {
+      throw new TicketNotFoundError(id);
+    }
+
+    return ticket;
   }
 }

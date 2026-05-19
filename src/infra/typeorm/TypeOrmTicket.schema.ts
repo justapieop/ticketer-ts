@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, Index, PrimaryColumn, UpdateDateColumn } from "typeorm";
+import { Column, Entity, Index, PrimaryColumn } from "typeorm";
 
 export enum TypeOrmTicketPriority {
   Standard = "standard",
@@ -36,18 +36,17 @@ export class TypeOrmTicketSchema {
   })
   public subject!: string;
 
-  @CreateDateColumn({
+  @Column({
     type: "integer",
     nullable: false,
   })
   public createdAt!: Date;
 
-  @UpdateDateColumn({
+  @Column({
     type: "integer",
     nullable: true,
   })
   public updatedAt!: Date | null;
-
 
   @Column({
     type: "text",

@@ -3,9 +3,9 @@ import { CreateTicketCommand } from 'src/infra/commands/CreateTicket.command';
 import { ListTicketCommand } from 'src/infra/commands/ListTicket.command';
 import { GetTicketCommand } from 'src/infra/commands/GetTicket.command';
 import { EditTicketCommand } from 'src/infra/commands/EditTicket.command';
-import { CliTicketPriority, CliTicketStage } from 'src/infra/commands/common';
+import { TicketPriority, TicketStage } from 'src/domain/ticket/Ticket.domain';
 import { createTestingApp } from './helpers/create-testing-app';
-import { TicketService } from 'src/app/ticket/Ticket.service';
+import { TICKET_USE_CASES, type TicketUseCases } from 'src/app/ticket/ports/TicketUseCases.port';
 
 describe('Commands E2E', () => {
   let app: INestApplication;
@@ -27,12 +27,12 @@ describe('Commands E2E', () => {
     const getCmd = moduleRef.get(GetTicketCommand);
     const editCmd = moduleRef.get(EditTicketCommand);
 
-    const ticketService = moduleRef.get(TicketService);
+    const ticketUseCases: TicketUseCases = moduleRef.get(TICKET_USE_CASES);
 
     // Create
-    await createCmd.run([], { title: 'E2E title', subject: 'E2E subject', priority: CliTicketPriority.Standard });
+    await createCmd.run([], { title: 'E2E title', subject: 'E2E subject', priority: TicketPriority.Standard });
 
-    const ticketsAfterCreate = await ticketService.listTickets();
+    const ticketsAfterCreate = await ticketUseCases.listTickets();
     expect(ticketsAfterCreate.length).toBe(1);
     const created = ticketsAfterCreate[0];
     expect(created.title).toBe('E2E title');
@@ -40,17 +40,17 @@ describe('Commands E2E', () => {
 
     // Get
     await getCmd.run([], { id: created.id });
-    const fetched = await ticketService.getTicketById(created.id);
+    const fetched = await ticketUseCases.getTicketById(created.id);
     expect(fetched).not.toBeNull();
     expect(fetched?.id).toBe(created.id);
 
     // Edit (change title and stage)
-    await editCmd.run([], { id: created.id, title: 'E2E title edited', stage: CliTicketStage.InProgress });
+    await editCmd.run([], { id: created.id, title: 'E2E title edited', stage: TicketStage.InProgress });
 
-    const afterEdit = await ticketService.getTicketById(created.id);
+    const afterEdit = await ticketUseCases.getTicketById(created.id);
     expect(afterEdit).not.toBeNull();
     expect(afterEdit?.title).toBe('E2E title edited');
-    expect(afterEdit?.stage).toBeDefined();
+    expect(afterEdit?.stage).toBe(TicketStage.InProgress);
   });
 
   test('list prints no tickets when empty DB', async () => {
@@ -68,12 +68,12 @@ describe('Commands E2E', () => {
     spy.mockRestore();
   });
 
-  test('get prints message for missing ticket', async () => {
+  test('get prints error for missing ticket', async () => {
     const getCmd = moduleRef.get(GetTicketCommand);
 
-    const spy = jest.spyOn(console, 'log').mockImplementation(() => {});
+    const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
     await getCmd.run([], { id: 'missing-id' });
-    expect(spy).toHaveBeenCalledWith('No ticket found with id: missing-id');
+    expect(spy).toHaveBeenCalledWith('Error: Ticket with id missing-id not found');
     spy.mockRestore();
   });
 });

@@ -1,8 +1,9 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { TICKET_REPOSITORY, type TicketRepository } from "src/app/ticket/Ticket.repository";
+import { TICKET_REPOSITORY, type TicketRepository } from "src/domain/ticket/ports/TicketRepository.port";
 import { TicketService } from "src/app/ticket/Ticket.service";
-import { TICKET_ID_GENERATOR, type TicketIdGenerator } from "src/app/ticket/TicketId.generator";
+import { TICKET_ID_GENERATOR, type TicketIdGenerator } from "src/domain/ticket/ports/TicketIdGenerator.port";
+import { TICKET_USE_CASES } from "src/app/ticket/ports/TicketUseCases.port";
 import { CreateTicketCommand } from "src/infra/commands/CreateTicket.command";
 import { EditTicketCommand } from "src/infra/commands/EditTicket.command";
 import { GetTicketCommand } from "src/infra/commands/GetTicket.command";
@@ -27,7 +28,7 @@ import { TypeOrmTicketSchema } from "src/infra/typeorm/TypeOrmTicket.schema";
       useExisting: NanoIdGenerator,
     },
     {
-      provide: TicketService,
+      provide: TICKET_USE_CASES,
       useFactory: (
         ticketIdGenerator: TicketIdGenerator,
         ticketRepository: TicketRepository,
