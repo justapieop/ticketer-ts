@@ -2,7 +2,7 @@ import { Command, CommandRunner, Option } from "nest-commander";
 import Table from "cli-table3";
 import { CliTicketPriority, CliTicketStage } from "./common";
 import { Ticket } from "src/domain/ticket/Ticket.domain";
-import { TicketService } from "src/modules/ticket/Ticket.service";
+import { TicketService } from "src/app/ticket/Ticket.service";
 
 export interface CreateTicketFlags {
   title: string,

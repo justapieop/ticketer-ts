@@ -2,7 +2,7 @@ import { Command, CommandRunner, Option } from "nest-commander";
 import Table from "cli-table3";
 import { CliTicketPriority, CliTicketStage } from "./common";
 import { Ticket, TicketEditor } from "src/domain/ticket/Ticket.domain";
-import { TicketService } from "src/modules/ticket/Ticket.service";
+import { TicketService } from "src/app/ticket/Ticket.service";
 
 export interface EditTicketFlags {
   id: string,
@@ -59,7 +59,7 @@ export class EditTicketCommand extends CommandRunner {
         new Date(ticket.createdAt).toLocaleString(),
         ticket.updatedAt ? new Date(ticket.updatedAt).toLocaleString() : "Not updated yet",
         CliTicketPriority[ticket.priority] || String(ticket.priority),
-        CliTicketStage[ticket.priority] || String(ticket.stage),
+        CliTicketStage[ticket.stage] || String(ticket.stage),
     ]);
         
     console.log(table.toString());
