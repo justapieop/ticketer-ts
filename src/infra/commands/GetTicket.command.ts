@@ -1,6 +1,6 @@
 import { Command, CommandRunner, Option } from "nest-commander";
 import Table from "cli-table3";
-import { CliTicketPriority, CliTicketStage } from "./common";
+import { fromDomainPriority, fromDomainStage } from "./common";
 import { Ticket } from "src/domain/ticket/Ticket.domain";
 import { TicketService } from "src/app/ticket/Ticket.service";
 
@@ -34,8 +34,8 @@ export class GetTicketCommand extends CommandRunner {
       ticket.subject,
       new Date(ticket.createdAt).toLocaleString(),
       ticket.updatedAt ? new Date(ticket.updatedAt).toLocaleString() : "Not updated yet",
-      CliTicketPriority[ticket.priority] || String(ticket.priority),
-      CliTicketStage[ticket.stage] || String(ticket.stage),
+      fromDomainPriority(ticket.priority),
+      fromDomainStage(ticket.stage),
     ]);
     
     console.log(table.toString());

@@ -1,6 +1,17 @@
 import { Command, CommandRunner, Option } from "nest-commander";
 import Table from "cli-table3";
-import { CliTicketPriority, CliTicketStage } from "./common";
+import {
+  CLI_TICKET_PRIORITY_CHOICES,
+  CLI_TICKET_STAGE_CHOICES,
+  CliTicketPriority,
+  CliTicketStage,
+  fromDomainPriority,
+  fromDomainStage,
+  parseCliTicketPriority,
+  parseCliTicketStage,
+  toDomainPriority,
+  toDomainStage,
+} from "./common";
 import { EditTicketInput } from "src/app/ticket/inputs/EditTicket.input";
 import { Ticket } from "src/domain/ticket/Ticket.domain";
 import { TicketService } from "src/app/ticket/Ticket.service";
@@ -26,8 +37,8 @@ export class EditTicketCommand extends CommandRunner {
       options.id,
       options.title,
       options.subject,
-      options.priority !== undefined ? Ticket.parsePriority(CliTicketPriority[options.priority]) : undefined,
-      options.stage !== undefined ? Ticket.parseStage(CliTicketStage[options.stage]) : undefined,
+      options.priority !== undefined ? toDomainPriority(options.priority) : undefined,
+      options.stage !== undefined ? toDomainStage(options.stage) : undefined,
     ));
 
     if (!ticket) {
@@ -45,8 +56,8 @@ export class EditTicketCommand extends CommandRunner {
         ticket.subject,
         new Date(ticket.createdAt).toLocaleString(),
         ticket.updatedAt ? new Date(ticket.updatedAt).toLocaleString() : "Not updated yet",
-        CliTicketPriority[ticket.priority] || String(ticket.priority),
-        CliTicketStage[ticket.stage] || String(ticket.stage),
+        fromDomainPriority(ticket.priority),
+        fromDomainStage(ticket.stage),
     ]);
         
     console.log(table.toString());
@@ -83,23 +94,19 @@ export class EditTicketCommand extends CommandRunner {
     flags: "-p, --priority [string]",
     description: "Specify the priority for the ticket",
     required: false,
-    choices: Object.keys(CliTicketPriority).filter(
-      (k) => Number.isNaN(Number(k))
-    ),
+    choices: CLI_TICKET_PRIORITY_CHOICES,
   })
   public parsePriority(val: string): CliTicketPriority {
-    return CliTicketPriority[val as keyof typeof CliTicketPriority];
+    return parseCliTicketPriority(val);
   }
 
   @Option({
     flags: "-o, --stage [string]",
     description: "Specify the stage for the ticket",
     required: false,
-    choices: Object.keys(CliTicketStage).filter(
-      (k) => Number.isNaN(Number(k))
-    ),
+    choices: CLI_TICKET_STAGE_CHOICES,
   })
   public parseStage(val: string): CliTicketStage {
-    return CliTicketStage[val as keyof typeof CliTicketStage]
+    return parseCliTicketStage(val);
   }
 }

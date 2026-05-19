@@ -44,8 +44,8 @@ export class TypeOrmTicketRepository implements TicketRepository {
       schema.subject,
       schema.createdAt,
       schema.updatedAt,
-      Ticket.parsePriority(TypeOrmTicketPriority[schema.priority]),
-      Ticket.parseStage(TypeOrmTicketStage[schema.stage]),
+      this.toDomainPriority(schema.priority),
+      this.toDomainStage(schema.stage),
     );
 
     return newTicket;
@@ -60,16 +60,84 @@ export class TypeOrmTicketRepository implements TicketRepository {
       d.subject,
       d.createdAt,
       d.updatedAt,
-      Ticket.parsePriority(TypeOrmTicketPriority[d.priority]),
-      Ticket.parseStage(TypeOrmTicketStage[d.stage]),
+      this.toDomainPriority(d.priority),
+      this.toDomainStage(d.stage),
     ));
   }
 
   private toSchemaPriority(priority: TicketPriority): TypeOrmTicketPriority {
-    return priority as unknown as TypeOrmTicketPriority;
+    switch (priority) {
+      case TicketPriority.Standard:
+        return TypeOrmTicketPriority.Standard;
+      case TicketPriority.Priority:
+        return TypeOrmTicketPriority.Priority;
+      case TicketPriority.Urgent:
+        return TypeOrmTicketPriority.Urgent;
+    }
+
+    throw new Error(`Unknown ticket priority: ${priority}`);
   }
 
   private toSchemaStage(stage: TicketStage): TypeOrmTicketStage {
-    return stage as unknown as TypeOrmTicketStage;
+    switch (stage) {
+      case TicketStage.Created:
+        return TypeOrmTicketStage.Created;
+      case TicketStage.InProgress:
+        return TypeOrmTicketStage.InProgress;
+      case TicketStage.Escalated:
+        return TypeOrmTicketStage.Escalated;
+      case TicketStage.Resolving:
+        return TypeOrmTicketStage.Resolving;
+      case TicketStage.Closed:
+        return TypeOrmTicketStage.Closed;
+    }
+
+    throw new Error(`Unknown ticket stage: ${stage}`);
+  }
+
+  private toDomainPriority(priority: TypeOrmTicketPriority | string | number): TicketPriority {
+    switch (priority) {
+      case TypeOrmTicketPriority.Standard:
+      case String(TicketPriority.Standard):
+      case TicketPriority.Standard:
+        return TicketPriority.Standard;
+      case TypeOrmTicketPriority.Priority:
+      case String(TicketPriority.Priority):
+      case TicketPriority.Priority:
+        return TicketPriority.Priority;
+      case TypeOrmTicketPriority.Urgent:
+      case String(TicketPriority.Urgent):
+      case TicketPriority.Urgent:
+        return TicketPriority.Urgent;
+    }
+
+    throw new Error(`Unknown TypeORM ticket priority: ${priority}`);
+  }
+
+  private toDomainStage(stage: TypeOrmTicketStage | string | number): TicketStage {
+    switch (stage) {
+      case TypeOrmTicketStage.Created:
+      case String(TicketStage.Created):
+      case TicketStage.Created:
+        return TicketStage.Created;
+      case TypeOrmTicketStage.InProgress:
+      case String(TicketStage.InProgress):
+      case TicketStage.InProgress:
+        return TicketStage.InProgress;
+      case TypeOrmTicketStage.Escalated:
+      case String(TicketStage.Escalated):
+      case TicketStage.Escalated:
+        return TicketStage.Escalated;
+      case TypeOrmTicketStage.Resolving:
+      case String(TicketStage.Resolving):
+      case TicketStage.Resolving:
+        return TicketStage.Resolving;
+      case TypeOrmTicketStage.Closed:
+      case String(TicketStage.Closed):
+      case TicketStage.Closed:
+        return TicketStage.Closed;
+    }
+
+    throw new Error(`Unknown TypeORM ticket stage: ${stage}`);
   }
 }
