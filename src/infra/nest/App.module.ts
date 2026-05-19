@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { TicketModule } from "./modules/ticket/Ticket.module";
+import { TicketModule } from "./Ticket.module";
 
 @Module({
   imports: [

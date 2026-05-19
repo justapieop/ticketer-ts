@@ -1,15 +1,15 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TypeOrmTicketSchema } from 'src/infra/ticket/typeorm/TypeOrmTicket.schema';
-import { TypeOrmTicketRepository } from 'src/infra/ticket/typeorm/TypeOrmTicket.repository';
-import { TICKET_REPOSITORY } from 'src/app/ticket/Ticket.repository';
-import { TICKET_ID_GENERATOR } from 'src/app/ticket/TicketId.generator';
-import { TicketService } from 'src/modules/ticket/Ticket.service';
-import { CreateTicketCommand } from 'src/infra/ticket/commands/CreateTicket.command';
-import { ListTicketCommand } from 'src/infra/ticket/commands/ListTicket.command';
-import { GetTicketCommand } from 'src/infra/ticket/commands/GetTicket.command';
-import { EditTicketCommand } from 'src/infra/ticket/commands/EditTicket.command';
+import { TypeOrmTicketSchema } from 'src/infra/typeorm/TypeOrmTicket.schema';
+import { TypeOrmTicketRepository } from 'src/infra/typeorm/TypeOrmTicket.repository';
+import { TICKET_REPOSITORY, type TicketRepository } from 'src/app/ticket/Ticket.repository';
+import { TICKET_ID_GENERATOR, type TicketIdGenerator } from 'src/app/ticket/TicketId.generator';
+import { CreateTicketCommand } from 'src/infra/commands/CreateTicket.command';
+import { ListTicketCommand } from 'src/infra/commands/ListTicket.command';
+import { GetTicketCommand } from 'src/infra/commands/GetTicket.command';
+import { EditTicketCommand } from 'src/infra/commands/EditTicket.command';
+import { TicketService } from 'src/app/ticket/Ticket.service';
 
 export async function createTestingApp(): Promise<{ app: INestApplication; moduleRef: TestingModule }> {
   const moduleRef: TestingModule = await Test.createTestingModule({
@@ -30,12 +30,18 @@ export async function createTestingApp(): Promise<{ app: INestApplication; modul
         provide: TICKET_REPOSITORY,
         useExisting: TypeOrmTicketRepository,
       },
-      // Provide a simple deterministic ID generator for tests
       {
         provide: TICKET_ID_GENERATOR,
         useValue: { generate: () => 'e2e-id-' + Math.random().toString(36).slice(2, 8) },
       },
-      TicketService,
+      {
+        provide: TicketService,
+        useFactory: (
+          ticketIdGenerator: TicketIdGenerator,
+          ticketRepository: TicketRepository,
+        ): TicketService => new TicketService(ticketIdGenerator, ticketRepository),
+        inject: [TICKET_ID_GENERATOR, TICKET_REPOSITORY],
+      },
       CreateTicketCommand,
       ListTicketCommand,
       GetTicketCommand,

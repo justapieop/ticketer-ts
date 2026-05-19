@@ -1,8 +1,20 @@
 import { Command, CommandRunner, Option } from "nest-commander";
 import Table from "cli-table3";
-import { CliTicketPriority, CliTicketStage } from "./common";
-import { Ticket, TicketEditor } from "src/domain/ticket/Ticket.domain";
-import { TicketService } from "src/modules/ticket/Ticket.service";
+import {
+  CLI_TICKET_PRIORITY_CHOICES,
+  CLI_TICKET_STAGE_CHOICES,
+  CliTicketPriority,
+  CliTicketStage,
+  fromDomainPriority,
+  fromDomainStage,
+  parseCliTicketPriority,
+  parseCliTicketStage,
+  toDomainPriority,
+  toDomainStage,
+} from "./common";
+import { EditTicketInput } from "src/app/ticket/inputs/EditTicket.input";
+import { Ticket } from "src/domain/ticket/Ticket.domain";
+import { TicketService } from "src/app/ticket/Ticket.service";
 
 export interface EditTicketFlags {
   id: string,
@@ -21,32 +33,18 @@ export class EditTicketCommand extends CommandRunner {
   }
   
   public async run(passedParams: string[], options: EditTicketFlags): Promise<void> {
-    let ticket: Ticket | null = await this.ticketService.getTicketById(options.id);
+    const ticket: Ticket | null = await this.ticketService.editTicket(new EditTicketInput(
+      options.id,
+      options.title,
+      options.subject,
+      options.priority !== undefined ? toDomainPriority(options.priority) : undefined,
+      options.stage !== undefined ? toDomainStage(options.stage) : undefined,
+    ));
 
     if (!ticket) {
       console.error("Ticket does not exist");
       return;
     }
-
-    const editor: TicketEditor = ticket.edit();
-
-    if (options.title) {
-      editor.setTitle(options.title);
-    }
-
-    if (options.subject) {
-      editor.setSubject(options.subject);
-    }
-
-    if (options.priority) {
-      editor.setPriority(Ticket.parsePriority(CliTicketPriority[options.priority]));
-    }
-
-    if (options.stage) {
-      editor.setStage(Ticket.parseStage(CliTicketStage[options.stage]));
-    }
-
-    await this.ticketService.saveTicket(ticket);
     
     const table = new Table({
       head: ["ID", "Title", "Subject", "Created", "Last Updated", "Priority", "Stage"],
@@ -58,8 +56,8 @@ export class EditTicketCommand extends CommandRunner {
         ticket.subject,
         new Date(ticket.createdAt).toLocaleString(),
         ticket.updatedAt ? new Date(ticket.updatedAt).toLocaleString() : "Not updated yet",
-        CliTicketPriority[ticket.priority] || String(ticket.priority),
-        CliTicketStage[ticket.priority] || String(ticket.stage),
+        fromDomainPriority(ticket.priority),
+        fromDomainStage(ticket.stage),
     ]);
         
     console.log(table.toString());
@@ -96,23 +94,19 @@ export class EditTicketCommand extends CommandRunner {
     flags: "-p, --priority [string]",
     description: "Specify the priority for the ticket",
     required: false,
-    choices: Object.keys(CliTicketPriority).filter(
-      (k) => Number.isNaN(Number(k))
-    ),
+    choices: CLI_TICKET_PRIORITY_CHOICES,
   })
   public parsePriority(val: string): CliTicketPriority {
-    return CliTicketPriority[val as keyof typeof CliTicketPriority];
+    return parseCliTicketPriority(val);
   }
 
   @Option({
     flags: "-o, --stage [string]",
     description: "Specify the stage for the ticket",
     required: false,
-    choices: Object.keys(CliTicketStage).filter(
-      (k) => Number.isNaN(Number(k))
-    ),
+    choices: CLI_TICKET_STAGE_CHOICES,
   })
   public parseStage(val: string): CliTicketStage {
-    return CliTicketStage[val as keyof typeof CliTicketStage]
+    return parseCliTicketStage(val);
   }
 }

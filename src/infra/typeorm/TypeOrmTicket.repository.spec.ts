@@ -37,8 +37,8 @@ describe('TypeOrmTicketRepository', () => {
       subject: ticket.subject,
       createdAt: ticket.createdAt,
       updatedAt: ticket.updatedAt,
-      priority: expect.any(Number),
-      stage: expect.any(Number),
+      priority: TypeOrmTicketPriority.Urgent,
+      stage: TypeOrmTicketStage.Resolving,
     });
 
     const qb = mockRepo.createQueryBuilder();

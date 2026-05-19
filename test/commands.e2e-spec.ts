@@ -1,11 +1,11 @@
-import { createTestingApp } from './helpers/create-testing-app';
 import { INestApplication } from '@nestjs/common';
-import { TicketService } from 'src/modules/ticket/Ticket.service';
-import { CreateTicketCommand } from 'src/infra/ticket/commands/CreateTicket.command';
-import { ListTicketCommand } from 'src/infra/ticket/commands/ListTicket.command';
-import { GetTicketCommand } from 'src/infra/ticket/commands/GetTicket.command';
-import { EditTicketCommand } from 'src/infra/ticket/commands/EditTicket.command';
-import { CliTicketPriority, CliTicketStage } from 'src/infra/ticket/commands/common';
+import { CreateTicketCommand } from 'src/infra/commands/CreateTicket.command';
+import { ListTicketCommand } from 'src/infra/commands/ListTicket.command';
+import { GetTicketCommand } from 'src/infra/commands/GetTicket.command';
+import { EditTicketCommand } from 'src/infra/commands/EditTicket.command';
+import { CliTicketPriority, CliTicketStage } from 'src/infra/commands/common';
+import { createTestingApp } from './helpers/create-testing-app';
+import { TicketService } from 'src/app/ticket/Ticket.service';
 
 describe('Commands E2E', () => {
   let app: INestApplication;

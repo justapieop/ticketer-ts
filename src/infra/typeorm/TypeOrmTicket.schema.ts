@@ -1,17 +1,17 @@
 import { Column, CreateDateColumn, Entity, Index, PrimaryColumn, UpdateDateColumn } from "typeorm";
 
 export enum TypeOrmTicketPriority {
-  Standard,
-  Priority,
-  Urgent,
+  Standard = "standard",
+  Priority = "priority",
+  Urgent = "urgent",
 }
 
 export enum TypeOrmTicketStage {
-  Created,
-  InProgress,
-  Escalated,
-  Resolving,
-  Closed,
+  Created = "created",
+  InProgress = "in_progress",
+  Escalated = "escalated",
+  Resolving = "resolving",
+  Closed = "closed",
 }
 
 @Entity({
