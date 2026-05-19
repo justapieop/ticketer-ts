@@ -17,17 +17,41 @@ export enum CliTicketStage {
 export const CLI_TICKET_PRIORITY_CHOICES = Object.values(CliTicketPriority);
 export const CLI_TICKET_STAGE_CHOICES = Object.values(CliTicketStage);
 
+const CLI_TICKET_PRIORITY_BY_NAME: Record<string, CliTicketPriority> = {
+  standard: CliTicketPriority.Standard,
+  priority: CliTicketPriority.Priority,
+  urgent: CliTicketPriority.Urgent,
+};
+
+const CLI_TICKET_STAGE_BY_NAME: Record<string, CliTicketStage> = {
+  created: CliTicketStage.Created,
+  inprogress: CliTicketStage.InProgress,
+  escalated: CliTicketStage.Escalated,
+  resolving: CliTicketStage.Resolving,
+  closed: CliTicketStage.Closed,
+};
+
+function normalizeCliToken(value: string): string {
+  return value.trim().toLowerCase().replace(/[\s_-]/g, "");
+}
+
 export function parseCliTicketPriority(value: string): CliTicketPriority {
-  if (CLI_TICKET_PRIORITY_CHOICES.includes(value as CliTicketPriority)) {
-    return value as CliTicketPriority;
+  const normalized = normalizeCliToken(value);
+  const parsed = CLI_TICKET_PRIORITY_BY_NAME[normalized];
+
+  if (parsed) {
+    return parsed;
   }
 
   throw new Error(`Unknown CLI ticket priority: ${value}`);
 }
 
 export function parseCliTicketStage(value: string): CliTicketStage {
-  if (CLI_TICKET_STAGE_CHOICES.includes(value as CliTicketStage)) {
-    return value as CliTicketStage;
+  const normalized = normalizeCliToken(value);
+  const parsed = CLI_TICKET_STAGE_BY_NAME[normalized];
+
+  if (parsed) {
+    return parsed;
   }
 
   throw new Error(`Unknown CLI ticket stage: ${value}`);

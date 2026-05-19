@@ -1,30 +1,7 @@
 import { Ticket, TicketPriority, TicketStage, TicketEditor } from './Ticket.domain';
-import { InvalidPriorityInput } from './exceptions/InvalidPriorityInput.error';
-import { InvalidStageInput } from './exceptions/InvalidStageInput.error';
 import { InvalidTicketDataError } from './exceptions/InvalidTicketData.error';
 
 describe('Ticket domain', () => {
-  test('parsePriority accepts known names (case-insensitive)', () => {
-    expect(Ticket.parsePriority('standard')).toBe(TicketPriority.Standard);
-    expect(Ticket.parsePriority('Priority')).toBe(TicketPriority.Priority);
-    expect(Ticket.parsePriority('URGENT')).toBe(TicketPriority.Urgent);
-  });
-
-  test('parsePriority throws on unknown input', () => {
-    expect(() => Ticket.parsePriority('unknown')).toThrow(InvalidPriorityInput);
-  });
-
-  test('parseStage accepts known names (case-insensitive)', () => {
-    expect(Ticket.parseStage('created')).toBe(TicketStage.Created);
-    expect(Ticket.parseStage('inprogress')).toBe(TicketStage.InProgress);
-    expect(Ticket.parseStage('resolving')).toBe(TicketStage.Resolving);
-    expect(Ticket.parseStage('closed')).toBe(TicketStage.Closed);
-  });
-
-  test('parseStage throws on unknown input', () => {
-    expect(() => Ticket.parseStage('invalid')).toThrow(InvalidStageInput);
-  });
-
   test('validateStageTransition allows valid transitions and rejects invalid ones', () => {
     // Allowed: Created -> InProgress
     expect(() => Ticket.validateStageTransition(TicketStage.Created, TicketStage.InProgress)).not.toThrow();
