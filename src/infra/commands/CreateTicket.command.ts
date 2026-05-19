@@ -1,6 +1,7 @@
 import { Command, CommandRunner, Option } from "nest-commander";
 import Table from "cli-table3";
 import { CliTicketPriority, CliTicketStage } from "./common";
+import { CreateTicketInput } from "src/app/ticket/inputs/CreateTicket.input";
 import { Ticket } from "src/domain/ticket/Ticket.domain";
 import { TicketService } from "src/app/ticket/Ticket.service";
 
@@ -19,11 +20,11 @@ export class CreateTicketCommand extends CommandRunner {
   }
 
   public async run(passedParams: string[], options: CreateTicketFlags): Promise<void> {
-    const ticket: Ticket = await this.ticketService.createTicket(
+    const ticket: Ticket = await this.ticketService.createTicket(new CreateTicketInput(
       options.title,
       options.subject,
-      Ticket.parsePriority(CliTicketPriority[options.priority]),
-    );
+      options.priority !== undefined ? Ticket.parsePriority(CliTicketPriority[options.priority]) : undefined,
+    ));
 
     const table = new Table({
       head: ["ID", "Title", "Subject", "Created", "Priority", "Stage"],

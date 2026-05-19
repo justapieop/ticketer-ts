@@ -1,7 +1,7 @@
 import { Command, CommandRunner, Option } from "nest-commander";
 import Table from "cli-table3";
 import { CliTicketPriority, CliTicketStage } from "./common";
-import { UpdateTicketDto } from "src/app/ticket/dtos/UpdateTicket.dto";
+import { EditTicketInput } from "src/app/ticket/inputs/EditTicket.input";
 import { Ticket } from "src/domain/ticket/Ticket.domain";
 import { TicketService } from "src/app/ticket/Ticket.service";
 
@@ -22,7 +22,7 @@ export class EditTicketCommand extends CommandRunner {
   }
   
   public async run(passedParams: string[], options: EditTicketFlags): Promise<void> {
-    const ticket: Ticket | null = await this.ticketService.editTicket(new UpdateTicketDto(
+    const ticket: Ticket | null = await this.ticketService.editTicket(new EditTicketInput(
       options.id,
       options.title,
       options.subject,

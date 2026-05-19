@@ -1,7 +1,8 @@
 import { Ticket, TicketPriority, TicketStage } from "src/domain/ticket/Ticket.domain";
 import { type TicketRepository } from "src/app/ticket/Ticket.repository";
 import { type TicketIdGenerator } from "src/app/ticket/TicketId.generator";
-import { UpdateTicketDto } from "src/app/ticket/dtos/UpdateTicket.dto";
+import { CreateTicketInput } from "src/app/ticket/inputs/CreateTicket.input";
+import { EditTicketInput } from "src/app/ticket/inputs/EditTicket.input";
 
 export class TicketService {
   public constructor(
@@ -9,14 +10,14 @@ export class TicketService {
     private readonly ticketRepository: TicketRepository,
   ) {}
 
-  public async createTicket(title: string, subject: string, priority: TicketPriority = TicketPriority.Standard): Promise<Ticket> {
+  public async createTicket(input: CreateTicketInput): Promise<Ticket> {
     const ticket: Ticket = new Ticket(
       this.ticketIdGenerator.generate(),
-      title,
-      subject,
+      input.title,
+      input.subject,
       new Date(),
       null,
-      priority,
+      input.priority ?? TicketPriority.Standard,
       TicketStage.Created,
     );
 
@@ -29,7 +30,7 @@ export class TicketService {
     await this.ticketRepository.save(ticket);
   }
 
-  public async editTicket(input: UpdateTicketDto): Promise<Ticket | null> {
+  public async editTicket(input: EditTicketInput): Promise<Ticket | null> {
     const ticket: Ticket | null = await this.ticketRepository.getTicketById(input.id);
 
     if (!ticket) {

@@ -1,6 +1,7 @@
 import { TicketService } from './Ticket.service';
 import { Ticket, TicketPriority, TicketStage } from '../../domain/ticket/Ticket.domain';
-import { UpdateTicketDto } from './dtos/UpdateTicket.dto';
+import { CreateTicketInput } from './inputs/CreateTicket.input';
+import { EditTicketInput } from './inputs/EditTicket.input';
 
 describe('TicketService', () => {
   test('createTicket generates id, saves and returns ticket', async () => {
@@ -14,7 +15,7 @@ describe('TicketService', () => {
 
     const svc = new TicketService(mockIdGen as any, mockRepo as any);
 
-    const result = await svc.createTicket('t1', 's1', TicketPriority.Priority);
+    const result = await svc.createTicket(new CreateTicketInput('t1', 's1', TicketPriority.Priority));
 
     expect(mockIdGen.generate).toHaveBeenCalled();
     expect(mockRepo.save).toHaveBeenCalled();
@@ -48,7 +49,7 @@ describe('TicketService', () => {
 
     const svc = new TicketService(mockIdGen as any, mockRepo as any);
 
-    const result = await svc.editTicket(new UpdateTicketDto(
+    const result = await svc.editTicket(new EditTicketInput(
       '1',
       'new',
       undefined,
@@ -74,7 +75,7 @@ describe('TicketService', () => {
 
     const svc = new TicketService(mockIdGen as any, mockRepo as any);
 
-    const result = await svc.editTicket(new UpdateTicketDto('missing', 'new'));
+    const result = await svc.editTicket(new EditTicketInput('missing', 'new'));
 
     expect(result).toBeNull();
     expect(mockRepo.save).not.toHaveBeenCalled();

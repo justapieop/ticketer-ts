@@ -1,7 +1,7 @@
 import { TicketPriority, TicketStage } from "src/domain/ticket/Ticket.domain";
 
-export class UpdateTicketDto {
-  constructor(
+export class EditTicketInput {
+  public constructor(
     public readonly id: string,
     public readonly title?: string,
     public readonly subject?: string,
