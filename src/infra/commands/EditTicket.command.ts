@@ -1,7 +1,8 @@
 import { Command, CommandRunner, Option } from "nest-commander";
 import Table from "cli-table3";
 import { CliTicketPriority, CliTicketStage } from "./common";
-import { Ticket, TicketEditor } from "src/domain/ticket/Ticket.domain";
+import { UpdateTicketDto } from "src/app/ticket/dtos/UpdateTicket.dto";
+import { Ticket } from "src/domain/ticket/Ticket.domain";
 import { TicketService } from "src/app/ticket/Ticket.service";
 
 export interface EditTicketFlags {
@@ -21,32 +22,18 @@ export class EditTicketCommand extends CommandRunner {
   }
   
   public async run(passedParams: string[], options: EditTicketFlags): Promise<void> {
-    let ticket: Ticket | null = await this.ticketService.getTicketById(options.id);
+    const ticket: Ticket | null = await this.ticketService.editTicket(new UpdateTicketDto(
+      options.id,
+      options.title,
+      options.subject,
+      options.priority !== undefined ? Ticket.parsePriority(CliTicketPriority[options.priority]) : undefined,
+      options.stage !== undefined ? Ticket.parseStage(CliTicketStage[options.stage]) : undefined,
+    ));
 
     if (!ticket) {
       console.error("Ticket does not exist");
       return;
     }
-
-    const editor: TicketEditor = ticket.edit();
-
-    if (options.title) {
-      editor.setTitle(options.title);
-    }
-
-    if (options.subject) {
-      editor.setSubject(options.subject);
-    }
-
-    if (options.priority) {
-      editor.setPriority(Ticket.parsePriority(CliTicketPriority[options.priority]));
-    }
-
-    if (options.stage) {
-      editor.setStage(Ticket.parseStage(CliTicketStage[options.stage]));
-    }
-
-    await this.ticketService.saveTicket(ticket);
     
     const table = new Table({
       head: ["ID", "Title", "Subject", "Created", "Last Updated", "Priority", "Stage"],

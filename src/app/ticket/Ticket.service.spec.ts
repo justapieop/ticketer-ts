@@ -1,5 +1,6 @@
 import { TicketService } from './Ticket.service';
 import { Ticket, TicketPriority, TicketStage } from '../../domain/ticket/Ticket.domain';
+import { UpdateTicketDto } from './dtos/UpdateTicket.dto';
 
 describe('TicketService', () => {
   test('createTicket generates id, saves and returns ticket', async () => {
@@ -34,5 +35,48 @@ describe('TicketService', () => {
 
     expect(result).toBe(sample);
     expect(mockRepo.listTicket).toHaveBeenCalled();
+  });
+
+  test('editTicket applies changes and saves through repository', async () => {
+    const mockIdGen = { generate: jest.fn() };
+    const ticket = new Ticket('1', 'old', 'subject', new Date(0), null, TicketPriority.Priority, TicketStage.Created);
+    const mockRepo = {
+      save: jest.fn().mockImplementation(async (t: Ticket) => t),
+      getTicketById: jest.fn().mockResolvedValue(ticket),
+      listTicket: jest.fn(),
+    } as any;
+
+    const svc = new TicketService(mockIdGen as any, mockRepo as any);
+
+    const result = await svc.editTicket(new UpdateTicketDto(
+      '1',
+      'new',
+      undefined,
+      TicketPriority.Standard,
+      TicketStage.InProgress,
+    ));
+
+    expect(result).toBe(ticket);
+    expect(ticket.title).toBe('new');
+    expect(ticket.priority).toBe(TicketPriority.Standard);
+    expect(ticket.stage).toBe(TicketStage.InProgress);
+    expect(ticket.updatedAt).not.toBeNull();
+    expect(mockRepo.save).toHaveBeenCalledWith(ticket);
+  });
+
+  test('editTicket returns null when ticket is missing', async () => {
+    const mockIdGen = { generate: jest.fn() };
+    const mockRepo = {
+      save: jest.fn(),
+      getTicketById: jest.fn().mockResolvedValue(null),
+      listTicket: jest.fn(),
+    } as any;
+
+    const svc = new TicketService(mockIdGen as any, mockRepo as any);
+
+    const result = await svc.editTicket(new UpdateTicketDto('missing', 'new'));
+
+    expect(result).toBeNull();
+    expect(mockRepo.save).not.toHaveBeenCalled();
   });
 });
