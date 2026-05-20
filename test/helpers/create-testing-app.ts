@@ -5,7 +5,7 @@ import { TypeOrmTicketSchema } from 'src/infra/typeorm/TypeOrmTicket.schema';
 import { TypeOrmTicketRepository } from 'src/infra/typeorm/TypeOrmTicket.repository';
 import { TICKET_REPOSITORY, type TicketRepository } from 'src/domain/ticket/ports/TicketRepository.port';
 import { TICKET_ID_GENERATOR, type TicketIdGenerator } from 'src/domain/ticket/ports/TicketIdGenerator.port';
-import { TICKET_USE_CASES } from 'src/app/ticket/ports/TicketUseCases.port';
+import { TICKET_USE_CASES } from 'src/domain/ticket/ports/TicketUseCases.port';
 import { TicketService } from 'src/app/ticket/Ticket.service';
 import { CreateTicketCommand } from 'src/infra/commands/CreateTicket.command';
 import { ListTicketCommand } from 'src/infra/commands/ListTicket.command';

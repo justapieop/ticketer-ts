@@ -1,10 +1,10 @@
 import { Ticket } from "src/domain/ticket/Ticket.domain";
-import { TicketNotFoundError } from "src/domain/ticket/exceptions/TicketNotFound.error";
+import { TicketNotFoundError } from "src/app/ticket/exceptions/TicketNotFound.error";
 import { type TicketRepository } from "src/domain/ticket/ports/TicketRepository.port";
 import { type TicketIdGenerator } from "src/domain/ticket/ports/TicketIdGenerator.port";
 import { CreateTicketInput } from "src/app/ticket/inputs/CreateTicket.input";
 import { EditTicketInput } from "src/app/ticket/inputs/EditTicket.input";
-import { type TicketUseCases } from "src/app/ticket/ports/TicketUseCases.port";
+import { type TicketUseCases } from "src/domain/ticket/ports/TicketUseCases.port";
 
 export class TicketService implements TicketUseCases {
   public constructor(
@@ -32,22 +32,20 @@ export class TicketService implements TicketUseCases {
       throw new TicketNotFoundError(input.id);
     }
 
-    const editor = ticket.edit();
-
     if (input.title !== undefined) {
-      editor.setTitle(input.title);
+      ticket.changeTitle(input.title);
     }
 
     if (input.subject !== undefined) {
-      editor.setSubject(input.subject);
+      ticket.changeSubject(input.subject);
     }
 
     if (input.priority !== undefined) {
-      editor.setPriority(input.priority);
+      ticket.changePriority(input.priority);
     }
 
     if (input.stage !== undefined) {
-      editor.setStage(input.stage);
+      ticket.changeStage(input.stage);
     }
 
     await this.ticketRepository.save(ticket);

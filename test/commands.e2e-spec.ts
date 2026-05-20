@@ -5,7 +5,7 @@ import { GetTicketCommand } from 'src/infra/commands/GetTicket.command';
 import { EditTicketCommand } from 'src/infra/commands/EditTicket.command';
 import { TicketPriority, TicketStage } from 'src/domain/ticket/Ticket.domain';
 import { createTestingApp } from './helpers/create-testing-app';
-import { TICKET_USE_CASES, type TicketUseCases } from 'src/app/ticket/ports/TicketUseCases.port';
+import { TICKET_USE_CASES, type TicketUseCases } from 'src/domain/ticket/ports/TicketUseCases.port';
 
 describe('Commands E2E', () => {
   let app: INestApplication;

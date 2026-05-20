@@ -1,4 +1,4 @@
-import { Ticket, TicketPriority, TicketStage, TicketEditor } from './Ticket.domain';
+import { Ticket, TicketPriority, TicketStage } from './Ticket.domain';
 import { InvalidTicketDataError } from './exceptions/InvalidTicketData.error';
 
 describe('Ticket domain', () => {
@@ -44,28 +44,38 @@ describe('Ticket domain', () => {
     expect(() => Ticket.validateStageTransition(TicketStage.Created, TicketStage.Closed)).toThrow(InvalidTicketDataError);
   });
 
-  test('TicketEditor updates fields and touches updatedAt', () => {
+  test('changeTitle and changeSubject update fields and touch updatedAt', () => {
     const t = Ticket.reconstitute('1', 'a', 's', new Date(0), null, TicketPriority.Standard, TicketStage.Created);
-    const editor = t.edit();
 
     const before = t.updatedAt;
-    editor.setTitle('new title').setSubject('new subject');
+    t.changeTitle('new title');
+    t.changeSubject('new subject');
 
     expect(t.title).toBe('new title');
     expect(t.subject).toBe('new subject');
     expect(t.updatedAt).not.toBe(before);
   });
 
-  test('TicketEditor enforces stage transition validation', () => {
+  test('changeTitle rejects empty title', () => {
     const t = Ticket.reconstitute('1', 'a', 's', new Date(0), null, TicketPriority.Standard, TicketStage.Created);
-    const editor = t.edit();
+    expect(() => t.changeTitle('')).toThrow(InvalidTicketDataError);
+    expect(() => t.changeTitle('   ')).toThrow(InvalidTicketDataError);
+  });
+
+  test('changeSubject rejects empty subject', () => {
+    const t = Ticket.reconstitute('1', 'a', 's', new Date(0), null, TicketPriority.Standard, TicketStage.Created);
+    expect(() => t.changeSubject('')).toThrow(InvalidTicketDataError);
+    expect(() => t.changeSubject('   ')).toThrow(InvalidTicketDataError);
+  });
+
+  test('changeStage enforces stage transition validation', () => {
+    const t = Ticket.reconstitute('1', 'a', 's', new Date(0), null, TicketPriority.Standard, TicketStage.Created);
 
     // valid
-    expect(() => editor.setStage(TicketStage.InProgress)).not.toThrow();
+    expect(() => t.changeStage(TicketStage.InProgress)).not.toThrow();
 
     // invalid transition (Created -> Closed)
     const t2 = Ticket.reconstitute('2', 'b', 's', new Date(0), null, TicketPriority.Standard, TicketStage.Created);
-    const editor2 = t2.edit();
-    expect(() => editor2.setStage(TicketStage.Closed)).toThrow(InvalidTicketDataError);
+    expect(() => t2.changeStage(TicketStage.Closed)).toThrow(InvalidTicketDataError);
   });
 });

@@ -66,11 +66,17 @@ export class Ticket {
 
 
   public changeTitle(title: string): void {
+    if (!title.trim()) {
+      throw new InvalidTicketDataError("Title cannot be empty.");
+    }
     this._title = title;
     this._updatedAt = new Date();
   }
 
   public changeSubject(subject: string): void {
+    if (!subject.trim()) {
+      throw new InvalidTicketDataError("Subject cannot be empty.");
+    }
     this._subject = subject;
     this._updatedAt = new Date();
   }
@@ -84,10 +90,6 @@ export class Ticket {
     Ticket.validateStageTransition(this._stage, stage);
     this._stage = stage;
     this._updatedAt = new Date();
-  }
-
-  public edit(): TicketEditor {
-    return new TicketEditor(this);
   }
 
   public static validateStageTransition(from: TicketStage, to: TicketStage): void {
@@ -106,32 +108,6 @@ export class Ticket {
     if (!allowed[from]?.includes(to)) {
       throw new InvalidTicketDataError("Invalid ticket stage transition.");
     }
-  }
-}
-
-export class TicketEditor {
-  public constructor(
-    private readonly ticket: Ticket,
-  ) {}
-
-  public setTitle(title: string): TicketEditor {
-    this.ticket.changeTitle(title);
-    return this;
-  }
-
-  public setSubject(subject: string): TicketEditor {
-    this.ticket.changeSubject(subject);
-    return this;
-  }
-
-  public setPriority(priority: TicketPriority): TicketEditor {
-    this.ticket.changePriority(priority);
-    return this;
-  }
-
-  public setStage(stage: TicketStage): TicketEditor {
-    this.ticket.changeStage(stage);
-    return this;
   }
 }
 
