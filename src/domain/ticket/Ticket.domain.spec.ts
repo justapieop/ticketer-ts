@@ -56,16 +56,18 @@ describe('Ticket domain', () => {
     expect(t.updatedAt).not.toBe(before);
   });
 
-  test('changeTitle rejects empty title', () => {
+  test('editor setTitle rejects empty title', () => {
     const t = Ticket.reconstitute('1', 'a', 's', new Date(0), null, TicketPriority.Standard, TicketStage.Created);
-    expect(() => t.changeTitle('')).toThrow(InvalidTicketDataError);
-    expect(() => t.changeTitle('   ')).toThrow(InvalidTicketDataError);
+    const editor = t.edit();
+    expect(() => editor.setTitle('')).toThrow(InvalidTicketDataError);
+    expect(() => editor.setTitle('   ')).toThrow(InvalidTicketDataError);
   });
 
-  test('changeSubject rejects empty subject', () => {
+  test('editor setSubject rejects empty subject', () => {
     const t = Ticket.reconstitute('1', 'a', 's', new Date(0), null, TicketPriority.Standard, TicketStage.Created);
-    expect(() => t.changeSubject('')).toThrow(InvalidTicketDataError);
-    expect(() => t.changeSubject('   ')).toThrow(InvalidTicketDataError);
+    const editor = t.edit();
+    expect(() => editor.setSubject('')).toThrow(InvalidTicketDataError);
+    expect(() => editor.setSubject('   ')).toThrow(InvalidTicketDataError);
   });
 
   test('changeStage enforces stage transition validation', () => {

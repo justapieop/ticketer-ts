@@ -1,4 +1,11 @@
 import { InvalidTicketDataError } from "./exceptions/InvalidTicketData.error";
+import { TicketEditor } from "./TicketEditor";
+import { TicketPriority } from "./TicketPriority.enum";
+import { TicketStage } from "./TicketStage.enum";
+
+export { TicketPriority } from "./TicketPriority.enum";
+export { TicketStage } from "./TicketStage.enum";
+export { TicketEditor } from "./TicketEditor";
 
 export class Ticket {
   private _title: string;
@@ -25,7 +32,6 @@ export class Ticket {
     this._stage = stage;
   }
 
-
   public static create(
     id: string,
     title: string,
@@ -41,7 +47,6 @@ export class Ticket {
     return new Ticket(id, title, subject, new Date(), null, priority, TicketStage.Created);
   }
 
-
   public static reconstitute(
     id: string,
     title: string,
@@ -54,8 +59,6 @@ export class Ticket {
     return new Ticket(id, title, subject, createdAt, updatedAt, priority, stage);
   }
 
-
-
   get title(): string { return this._title; }
   get subject(): string { return this._subject; }
   get createdAt(): Date { return this._createdAt; }
@@ -63,20 +66,12 @@ export class Ticket {
   get priority(): TicketPriority { return this._priority; }
   get stage(): TicketStage { return this._stage; }
 
-
-
   public changeTitle(title: string): void {
-    if (!title.trim()) {
-      throw new InvalidTicketDataError("Title cannot be empty.");
-    }
     this._title = title;
     this._updatedAt = new Date();
   }
 
   public changeSubject(subject: string): void {
-    if (!subject.trim()) {
-      throw new InvalidTicketDataError("Subject cannot be empty.");
-    }
     this._subject = subject;
     this._updatedAt = new Date();
   }
@@ -90,6 +85,10 @@ export class Ticket {
     Ticket.validateStageTransition(this._stage, stage);
     this._stage = stage;
     this._updatedAt = new Date();
+  }
+
+  public edit(): TicketEditor {
+    return new TicketEditor(this);
   }
 
   public static validateStageTransition(from: TicketStage, to: TicketStage): void {
@@ -109,18 +108,4 @@ export class Ticket {
       throw new InvalidTicketDataError("Invalid ticket stage transition.");
     }
   }
-}
-
-export enum TicketPriority {
-  Standard = "Standard",
-  Priority = "Priority",
-  Urgent = "Urgent",
-}
-
-export enum TicketStage {
-  Created = "Created",
-  InProgress = "InProgress",
-  Escalated = "Escalated",
-  Resolving = "Resolving",
-  Closed = "Closed",
 }
