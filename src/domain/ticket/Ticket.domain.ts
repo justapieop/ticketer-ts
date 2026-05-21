@@ -1,4 +1,11 @@
 import { InvalidTicketDataError } from "./exceptions/InvalidTicketData.error";
+import { TicketEditor } from "./TicketEditor";
+import { TicketPriority } from "./TicketPriority.enum";
+import { TicketStage } from "./TicketStage.enum";
+
+export { TicketPriority } from "./TicketPriority.enum";
+export { TicketStage } from "./TicketStage.enum";
+export { TicketEditor } from "./TicketEditor";
 
 export class Ticket {
   private _title: string;
@@ -25,7 +32,6 @@ export class Ticket {
     this._stage = stage;
   }
 
-
   public static create(
     id: string,
     title: string,
@@ -41,7 +47,6 @@ export class Ticket {
     return new Ticket(id, title, subject, new Date(), null, priority, TicketStage.Created);
   }
 
-
   public static reconstitute(
     id: string,
     title: string,
@@ -54,16 +59,12 @@ export class Ticket {
     return new Ticket(id, title, subject, createdAt, updatedAt, priority, stage);
   }
 
-
-
   get title(): string { return this._title; }
   get subject(): string { return this._subject; }
   get createdAt(): Date { return this._createdAt; }
   get updatedAt(): Date | null { return this._updatedAt; }
   get priority(): TicketPriority { return this._priority; }
   get stage(): TicketStage { return this._stage; }
-
-
 
   public changeTitle(title: string): void {
     this._title = title;
@@ -107,44 +108,4 @@ export class Ticket {
       throw new InvalidTicketDataError("Invalid ticket stage transition.");
     }
   }
-}
-
-export class TicketEditor {
-  public constructor(
-    private readonly ticket: Ticket,
-  ) {}
-
-  public setTitle(title: string): TicketEditor {
-    this.ticket.changeTitle(title);
-    return this;
-  }
-
-  public setSubject(subject: string): TicketEditor {
-    this.ticket.changeSubject(subject);
-    return this;
-  }
-
-  public setPriority(priority: TicketPriority): TicketEditor {
-    this.ticket.changePriority(priority);
-    return this;
-  }
-
-  public setStage(stage: TicketStage): TicketEditor {
-    this.ticket.changeStage(stage);
-    return this;
-  }
-}
-
-export enum TicketPriority {
-  Standard = "Standard",
-  Priority = "Priority",
-  Urgent = "Urgent",
-}
-
-export enum TicketStage {
-  Created = "Created",
-  InProgress = "InProgress",
-  Escalated = "Escalated",
-  Resolving = "Resolving",
-  Closed = "Closed",
 }
