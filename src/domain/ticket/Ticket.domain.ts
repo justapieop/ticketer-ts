@@ -8,28 +8,15 @@ export { TicketStage } from "./TicketStage.enum";
 export { TicketEditor } from "./TicketEditor";
 
 export class Ticket {
-  private _title: string;
-  private _subject: string;
-  private _createdAt: Date;
-  private _updatedAt: Date | null;
-  private _priority: TicketPriority;
-  private _stage: TicketStage;
-
   private constructor(
     public readonly id: string,
-    title: string,
-    subject: string,
-    createdAt: Date,
-    updatedAt: Date | null,
-    priority: TicketPriority,
-    stage: TicketStage,
+    public title: string,
+    public subject: string,
+    public createdAt: Date,
+    public updatedAt: Date | null,
+    public priority: TicketPriority,
+    public stage: TicketStage,
   ) {
-    this._title = title;
-    this._subject = subject;
-    this._createdAt = createdAt;
-    this._updatedAt = updatedAt;
-    this._priority = priority;
-    this._stage = stage;
   }
 
   public static create(
@@ -59,32 +46,25 @@ export class Ticket {
     return new Ticket(id, title, subject, createdAt, updatedAt, priority, stage);
   }
 
-  get title(): string { return this._title; }
-  get subject(): string { return this._subject; }
-  get createdAt(): Date { return this._createdAt; }
-  get updatedAt(): Date | null { return this._updatedAt; }
-  get priority(): TicketPriority { return this._priority; }
-  get stage(): TicketStage { return this._stage; }
-
   public changeTitle(title: string): void {
-    this._title = title;
-    this._updatedAt = new Date();
+    this.title = title;
+    this.updatedAt = new Date();
   }
 
   public changeSubject(subject: string): void {
-    this._subject = subject;
-    this._updatedAt = new Date();
+    this.subject = subject;
+    this.updatedAt = new Date();
   }
 
   public changePriority(priority: TicketPriority): void {
-    this._priority = priority;
-    this._updatedAt = new Date();
+    this.priority = priority;
+    this.updatedAt = new Date();
   }
 
   public changeStage(stage: TicketStage): void {
-    Ticket.validateStageTransition(this._stage, stage);
-    this._stage = stage;
-    this._updatedAt = new Date();
+    Ticket.validateStageTransition(this.stage, stage);
+    this.stage = stage;
+    this.updatedAt = new Date();
   }
 
   public edit(): TicketEditor {
