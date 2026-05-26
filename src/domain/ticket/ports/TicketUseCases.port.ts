@@ -1,6 +1,6 @@
 import { Ticket } from "src/domain/ticket/Ticket.domain";
-import { CreateTicketInput } from "src/app/ticket/inputs/CreateTicket.input";
-import { EditTicketInput } from "src/app/ticket/inputs/EditTicket.input";
+import { CreateTicketInput } from "src/domain/ticket/ports/inputs/CreateTicket.input";
+import { EditTicketInput } from "src/domain/ticket/ports/inputs/EditTicket.input";
 
 export const TICKET_USE_CASES = Symbol("TICKET_USE_CASES");
 
