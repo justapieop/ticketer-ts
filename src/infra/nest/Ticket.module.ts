@@ -4,10 +4,10 @@ import { TICKET_REPOSITORY, type TicketRepository } from "src/domain/ticket/port
 import { TicketService } from "src/app/ticket/Ticket.service";
 import { TICKET_ID_GENERATOR, type TicketIdGenerator } from "src/domain/ticket/ports/TicketIdGenerator.port";
 import { TICKET_USE_CASES } from "src/domain/ticket/ports/TicketUseCases.port";
-import { CreateTicketCommand } from "src/infra/commands/CreateTicket.command";
-import { EditTicketCommand } from "src/infra/commands/EditTicket.command";
-import { GetTicketCommand } from "src/infra/commands/GetTicket.command";
-import { ListTicketCommand } from "src/infra/commands/ListTicket.command";
+import { CreateTicketCommand } from "src/infra/commands/ticket/CreateTicket.command";
+import { EditTicketCommand } from "src/infra/commands/ticket/EditTicket.command";
+import { GetTicketCommand } from "src/infra/commands/ticket/GetTicket.command";
+import { ListTicketCommand } from "src/infra/commands/ticket/ListTicket.command";
 import { NanoIdGenerator } from "src/infra/nanoid/NanoId.generator";
 import { TypeOrmTicketRepository } from "src/infra/typeorm/TypeOrmTicket.repository";
 import { TypeOrmTicketSchema } from "src/infra/typeorm/TypeOrmTicket.schema";

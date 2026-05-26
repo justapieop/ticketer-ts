@@ -6,8 +6,8 @@ import {
   TICKET_STAGE_CHOICES,
   parseTicketPriority,
   parseTicketStage,
-} from "./common";
-import { EditTicketInput } from "src/app/ticket/inputs/EditTicket.input";
+} from "../common";
+import { EditTicketInput } from "src/domain/ticket/ports/inputs/EditTicket.input";
 import { TicketPriority, TicketStage } from "src/domain/ticket/Ticket.domain";
 import { TicketNotFoundError } from "src/app/ticket/exceptions/TicketNotFound.error";
 import { InvalidTicketDataError } from "src/domain/ticket/exceptions/InvalidTicketData.error";
