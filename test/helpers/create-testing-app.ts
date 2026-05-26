@@ -7,10 +7,10 @@ import { TICKET_REPOSITORY, type TicketRepository } from 'src/domain/ticket/port
 import { TICKET_ID_GENERATOR, type TicketIdGenerator } from 'src/domain/ticket/ports/TicketIdGenerator.port';
 import { TICKET_USE_CASES } from 'src/domain/ticket/ports/TicketUseCases.port';
 import { TicketService } from 'src/app/ticket/Ticket.service';
-import { CreateTicketCommand } from 'src/infra/commands/CreateTicket.command';
-import { ListTicketCommand } from 'src/infra/commands/ListTicket.command';
-import { GetTicketCommand } from 'src/infra/commands/GetTicket.command';
-import { EditTicketCommand } from 'src/infra/commands/EditTicket.command';
+import { CreateTicketCommand } from 'src/infra/commands/ticket/CreateTicket.command';
+import { ListTicketCommand } from 'src/infra/commands/ticket/ListTicket.command';
+import { GetTicketCommand } from 'src/infra/commands/ticket/GetTicket.command';
+import { EditTicketCommand } from 'src/infra/commands/ticket/EditTicket.command';
 
 export async function createTestingApp(): Promise<{ app: INestApplication; moduleRef: TestingModule }> {
   const moduleRef: TestingModule = await Test.createTestingModule({

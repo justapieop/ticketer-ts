@@ -31,11 +31,11 @@ export class TypeOrmTicketRepository implements TicketRepository {
     return ticket;
   }
 
-  public async getTicketById(id: string): Promise<Ticket> {
+  public async getTicketById(id: string): Promise<Ticket | null> {
     const schema: TypeOrmTicketSchema | null = await this.ticketRepository.findOneBy({ id });
 
     if (!schema) {
-      throw new Error();
+      return null;
     }
 
     const newTicket: Ticket = Ticket.reconstitute(

@@ -4,7 +4,7 @@ import Table from "cli-table3";
 import {
   TICKET_PRIORITY_CHOICES,
   parseTicketPriority,
-} from "./common";
+} from "../common";
 import { CreateTicketInput } from "src/app/ticket/inputs/CreateTicket.input";
 import { TicketPriority } from "src/domain/ticket/Ticket.domain";
 import { TICKET_USE_CASES, type TicketUseCases } from "src/domain/ticket/ports/TicketUseCases.port";
