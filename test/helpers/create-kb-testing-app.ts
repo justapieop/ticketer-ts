@@ -28,10 +28,11 @@ export async function createKbTestingApp(): Promise<{
 				provide: KNOWLEDGE_REPOSITORY,
 				useValue: repository,
 			},
-			KnowledgeService,
 			{
 				provide: KNOWLEDGE_USE_CASES,
-				useExisting: KnowledgeService,
+				useFactory: (knowledgeRepository: KnowledgeRepository): KnowledgeService =>
+					new KnowledgeService(knowledgeRepository),
+				inject: [KNOWLEDGE_REPOSITORY],
 			},
 			AddKnowledgeCommand,
 			ListKnowledgeCommand,
