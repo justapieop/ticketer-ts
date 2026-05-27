@@ -3,14 +3,14 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmTicketSchema } from 'src/infra/typeorm/TypeOrmTicket.schema';
 import { TypeOrmTicketRepository } from 'src/infra/typeorm/TypeOrmTicket.repository';
-import { TICKET_REPOSITORY, type TicketRepository } from 'src/domain/ticket/ports/TicketRepository.port';
-import { TICKET_ID_GENERATOR, type TicketIdGenerator } from 'src/domain/ticket/ports/TicketIdGenerator.port';
-import { TICKET_USE_CASES } from 'src/domain/ticket/ports/TicketUseCases.port';
 import { TicketService } from 'src/app/ticket/Ticket.service';
 import { CreateTicketCommand } from 'src/infra/commands/ticket/CreateTicket.command';
 import { ListTicketCommand } from 'src/infra/commands/ticket/ListTicket.command';
 import { GetTicketCommand } from 'src/infra/commands/ticket/GetTicket.command';
 import { EditTicketCommand } from 'src/infra/commands/ticket/EditTicket.command';
+import { TICKET_ID_GENERATOR, TicketIdGenerator } from 'src/app/ticket/ports/TicketIdGenerator.port';
+import { TICKET_REPOSITORY, TicketRepository } from 'src/app/ticket/ports/TicketRepository.port';
+import { TICKET_USE_CASES } from 'src/app/ticket/ports/TicketUseCases.port';
 
 export async function createTestingApp(): Promise<{ app: INestApplication; moduleRef: TestingModule }> {
   const moduleRef: TestingModule = await Test.createTestingModule({

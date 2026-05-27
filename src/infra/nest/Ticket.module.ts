@@ -1,9 +1,9 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { TICKET_REPOSITORY, type TicketRepository } from "src/domain/ticket/ports/TicketRepository.port";
+import { TICKET_ID_GENERATOR, TicketIdGenerator } from "src/app/ticket/ports/TicketIdGenerator.port";
+import { TICKET_REPOSITORY, TicketRepository } from "src/app/ticket/ports/TicketRepository.port";
+import { TICKET_USE_CASES } from "src/app/ticket/ports/TicketUseCases.port";
 import { TicketService } from "src/app/ticket/Ticket.service";
-import { TICKET_ID_GENERATOR, type TicketIdGenerator } from "src/domain/ticket/ports/TicketIdGenerator.port";
-import { TICKET_USE_CASES } from "src/domain/ticket/ports/TicketUseCases.port";
 import { CreateTicketCommand } from "src/infra/commands/ticket/CreateTicket.command";
 import { EditTicketCommand } from "src/infra/commands/ticket/EditTicket.command";
 import { GetTicketCommand } from "src/infra/commands/ticket/GetTicket.command";

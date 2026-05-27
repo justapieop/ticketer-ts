@@ -1,8 +1,7 @@
 import { Inject } from "@nestjs/common";
 import { Command, CommandRunner } from "nest-commander";
 import Table, { type Table as TableType, } from "cli-table3";
-
-import { TICKET_USE_CASES, type TicketUseCases } from "src/domain/ticket/ports/TicketUseCases.port";
+import { TICKET_USE_CASES, type TicketUseCases } from "src/app/ticket/ports/TicketUseCases.port";
 
 @Command({ name: "list", description: "List all tickets", })
 export class ListTicketCommand extends CommandRunner {

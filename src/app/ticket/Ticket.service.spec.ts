@@ -1,8 +1,8 @@
 import { TicketService } from './Ticket.service';
 import { Ticket, TicketPriority, TicketStage } from '../../domain/ticket/Ticket.domain';
 import { TicketNotFoundError } from './exceptions/TicketNotFound.error';
-import { CreateTicketInput } from '../../domain/ticket/ports/inputs/CreateTicket.input';
-import { EditTicketInput } from '../../domain/ticket/ports/inputs/EditTicket.input';
+import { CreateTicketInput } from './ports/inputs/CreateTicket.input';
+import { EditTicketInput } from './ports/inputs/EditTicket.input';
 
 describe('TicketService', () => {
   test('createTicket generates id, saves and returns ticket', async () => {
