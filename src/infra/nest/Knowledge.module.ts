@@ -1,8 +1,8 @@
 import { Module } from "@nestjs/common";
 import { KnowledgeService } from "src/app/kb/Knowledge.service";
-import { KNOWLEDGE_ID_GENERATOR } from "src/domain/kb/ports/KnowledgeId.generator";
-import { KNOWLEDGE_REPOSITORY, type KnowledgeRepository } from "src/domain/kb/ports/Knowledge.repository";
-import { KNOWLEDGE_USE_CASES } from "src/domain/kb/ports/KnowledgeUseCase.port";
+import { KNOWLEDGE_ID_GENERATOR } from "src/app/kb/ports/KnowledgeId.generator";
+import { KNOWLEDGE_REPOSITORY, type KnowledgeRepository } from "src/app/kb/ports/Knowledge.repository";
+import { KNOWLEDGE_USE_CASES } from "src/app/kb/ports/KnowledgeUseCase.port";
 import { AddKnowledgeCommand } from "src/infra/commands/kb/AddKnowledge.command";
 import { ListKnowledgeCommand } from "src/infra/commands/kb/ListKnowledge.command";
 import { RetrieveKnowledgeCommand } from "src/infra/commands/kb/RetrieveKnowledge.command";

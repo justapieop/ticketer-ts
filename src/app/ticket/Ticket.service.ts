@@ -1,10 +1,10 @@
 import { Ticket } from "src/domain/ticket/Ticket.domain";
 import { TicketNotFoundError } from "src/app/ticket/exceptions/TicketNotFound.error";
-import { type TicketRepository } from "src/domain/ticket/ports/TicketRepository.port";
-import { type TicketIdGenerator } from "src/domain/ticket/ports/TicketIdGenerator.port";
-import { CreateTicketInput } from "src/domain/ticket/ports/inputs/CreateTicket.input";
-import { EditTicketInput } from "src/domain/ticket/ports/inputs/EditTicket.input";
-import { type TicketUseCases } from "src/domain/ticket/ports/TicketUseCases.port";
+import { CreateTicketInput } from "./ports/inputs/CreateTicket.input";
+import { EditTicketInput } from "./ports/inputs/EditTicket.input";
+import { TicketIdGenerator } from "./ports/TicketIdGenerator.port";
+import { TicketRepository } from "./ports/TicketRepository.port";
+import { TicketUseCases } from "./ports/TicketUseCases.port";
 
 export class TicketService implements TicketUseCases {
   public constructor(

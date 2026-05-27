@@ -1,6 +1,6 @@
 import { Knowledge } from "src/domain/kb/Knowledge.domain";
-import { type KnowledgeRepository } from "src/domain/kb/ports/Knowledge.repository";
-import { KnowledgeUseCase } from "src/domain/kb/ports/KnowledgeUseCase.port";
+import { type KnowledgeRepository } from "src/app/kb/ports/Knowledge.repository";
+import { KnowledgeUseCase } from "src/app/kb/ports/KnowledgeUseCase.port";
 
 export class KnowledgeService implements KnowledgeUseCase {
 	public constructor(

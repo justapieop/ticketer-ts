@@ -7,11 +7,11 @@ import {
   parseTicketPriority,
   parseTicketStage,
 } from "../common";
-import { EditTicketInput } from "src/domain/ticket/ports/inputs/EditTicket.input";
 import { TicketPriority, TicketStage } from "src/domain/ticket/Ticket.domain";
 import { TicketNotFoundError } from "src/app/ticket/exceptions/TicketNotFound.error";
 import { InvalidTicketDataError } from "src/domain/ticket/exceptions/InvalidTicketData.error";
-import { TICKET_USE_CASES, type TicketUseCases } from "src/domain/ticket/ports/TicketUseCases.port";
+import { EditTicketInput } from "src/app/ticket/ports/inputs/EditTicket.input";
+import { TICKET_USE_CASES, type TicketUseCases } from "src/app/ticket/ports/TicketUseCases.port";
 
 export interface EditTicketFlags {
   id: string,

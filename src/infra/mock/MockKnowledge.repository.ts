@@ -1,5 +1,5 @@
 import { Knowledge } from "src/domain/kb/Knowledge.domain";
-import { KnowledgeRepository } from "src/domain/kb/ports/Knowledge.repository";
+import { KnowledgeRepository } from "src/app/kb/ports/Knowledge.repository";
 import { MockKnowledgeSchema } from "./MockKnowledge.schema";
 
 export class MockKnowledgeRepository implements KnowledgeRepository {

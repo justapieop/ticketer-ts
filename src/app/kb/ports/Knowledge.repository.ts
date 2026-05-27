@@ -1,4 +1,4 @@
-import { Knowledge } from "../Knowledge.domain";
+import { Knowledge } from "../../../domain/kb/Knowledge.domain";
 
 export const KNOWLEDGE_REPOSITORY = Symbol("KNOWLEDGE_REPOSITORY");
 

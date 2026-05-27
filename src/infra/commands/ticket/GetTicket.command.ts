@@ -3,7 +3,7 @@ import { Command, CommandRunner, Option } from "nest-commander";
 import Table from "cli-table3";
 
 import { TicketNotFoundError } from "src/app/ticket/exceptions/TicketNotFound.error";
-import { TICKET_USE_CASES, type TicketUseCases } from "src/domain/ticket/ports/TicketUseCases.port";
+import { TICKET_USE_CASES, type TicketUseCases } from "src/app/ticket/ports/TicketUseCases.port";
 
 export interface GetTicketFlags {
   id: string,

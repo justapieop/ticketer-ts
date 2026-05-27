@@ -4,7 +4,7 @@ import { AddKnowledgeCommand } from "src/infra/commands/kb/AddKnowledge.command"
 import { ListKnowledgeCommand } from "src/infra/commands/kb/ListKnowledge.command";
 import { RetrieveKnowledgeCommand } from "src/infra/commands/kb/RetrieveKnowledge.command";
 import { SearchKnowledgeCommand } from "src/infra/commands/kb/SearchKnowledge.command";
-import { KNOWLEDGE_REPOSITORY, type KnowledgeRepository } from "src/domain/kb/ports/Knowledge.repository";
+import { KNOWLEDGE_REPOSITORY, type KnowledgeRepository } from "src/app/kb/ports/Knowledge.repository";
 import { createKbTestingApp } from "./helpers/create-kb-testing-app";
 
 describe("KB Commands E2E", () => {
