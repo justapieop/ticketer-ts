@@ -36,13 +36,6 @@ describe('Ticket domain', () => {
     expect(t.createdAt).toBe(date);
   });
 
-  test('validateStageTransition allows valid transitions and rejects invalid ones', () => {
-    // Allowed: Created -> InProgress
-    expect(() => Ticket.validateStageTransition(TicketStage.Created, TicketStage.InProgress)).not.toThrow();
-
-    // Disallowed: Created -> Closed
-    expect(() => Ticket.validateStageTransition(TicketStage.Created, TicketStage.Closed)).toThrow(InvalidTicketDataError);
-  });
 
   test('changeTitle and changeSubject update fields and touch updatedAt', () => {
     const t = Ticket.reconstitute('1', 'a', 's', new Date(0), null, TicketPriority.Standard, TicketStage.Created);

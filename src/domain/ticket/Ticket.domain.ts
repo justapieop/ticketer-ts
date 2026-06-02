@@ -2,17 +2,27 @@ import { InvalidTicketDataError } from "./exceptions/InvalidTicketData.error";
 import { TicketPriority } from "./TicketPriority.enum";
 import { TicketStage } from "./TicketStage.enum";
 
+interface TicketProps {
+  title: string;
+  subject: string;
+  createdAt: Date;
+  updatedAt: Date | null;
+  priority: TicketPriority;
+  stage: TicketStage;
+}
+
 export class Ticket {
   private constructor(
     public readonly id: string,
-    public title: string,
-    public subject: string,
-    public createdAt: Date,
-    public updatedAt: Date | null,
-    public priority: TicketPriority,
-    public stage: TicketStage,
-  ) {
-  }
+    private props: TicketProps,
+  ) {}
+
+  get title() { return this.props.title; }
+  get subject() { return this.props.subject; }
+  get createdAt() { return this.props.createdAt; }
+  get updatedAt() { return this.props.updatedAt; }
+  get priority() { return this.props.priority; }
+  get stage() { return this.props.stage; }
 
   public static create(
     id: string,
@@ -26,7 +36,14 @@ export class Ticket {
     if (!subject.trim()) {
       throw new InvalidTicketDataError("Subject cannot be empty.");
     }
-    return new Ticket(id, title, subject, new Date(), null, priority, TicketStage.Created);
+    return new Ticket(id, {
+      title,
+      subject,
+      createdAt: new Date(),
+      updatedAt: null,
+      priority,
+      stage: TicketStage.Created,
+    });
   }
 
   public static reconstitute(
@@ -38,38 +55,44 @@ export class Ticket {
     priority: TicketPriority,
     stage: TicketStage,
   ): Ticket {
-    return new Ticket(id, title, subject, createdAt, updatedAt, priority, stage);
+    return new Ticket(id, {
+      title,
+      subject,
+      createdAt,
+      updatedAt,
+      priority,
+      stage,
+    });
   }
 
   public changeTitle(title: string): void {
     if (!title.trim()) {
       throw new InvalidTicketDataError("Title cannot be empty.");
     }
-    this.title = title;
-    this.updatedAt = new Date();
+    this.props.title = title;
+    this.props.updatedAt = new Date();
   }
 
   public changeSubject(subject: string): void {
     if (!subject.trim()) {
       throw new InvalidTicketDataError("Subject cannot be empty.");
     }
-    this.subject = subject;
-    this.updatedAt = new Date();
+    this.props.subject = subject;
+    this.props.updatedAt = new Date();
   }
 
   public changePriority(priority: TicketPriority): void {
-    this.priority = priority;
-    this.updatedAt = new Date();
+    this.props.priority = priority;
+    this.props.updatedAt = new Date();
   }
 
   public changeStage(stage: TicketStage): void {
-    Ticket.validateStageTransition(this.stage, stage);
-    this.stage = stage;
-    this.updatedAt = new Date();
+    Ticket.validateStageTransition(this.props.stage, stage);
+    this.props.stage = stage;
+    this.props.updatedAt = new Date();
   }
 
-
-  public static validateStageTransition(from: TicketStage, to: TicketStage): void {
+  private static validateStageTransition(from: TicketStage, to: TicketStage): void {
     if (from === to) {
       return;
     }
