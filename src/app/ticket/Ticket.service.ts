@@ -1,7 +1,6 @@
-import { Ticket } from "src/domain/ticket";
+import { Ticket, TicketPriority, TicketStage } from "src/domain/ticket";
 import { TicketNotFoundError } from "src/app/ticket/exceptions/TicketNotFound.error";
 import { CreateTicketInput } from "./ports/inputs/CreateTicket.input";
-import { EditTicketInput } from "./ports/inputs/EditTicket.input";
 import { TicketIdGenerator } from "./ports/TicketIdGenerator.port";
 import { TicketRepository } from "./ports/TicketRepository.port";
 import { TicketUseCases } from "./ports/TicketUseCases.port";
@@ -25,28 +24,31 @@ export class TicketService implements TicketUseCases {
     return ticket;
   }
 
-  public async editTicket(input: EditTicketInput): Promise<Ticket> {
-    const ticket: Ticket | null = await this.ticketRepository.getTicketById(input.id);
+  public async reviseTicketContent(id: string, title: string, subject: string): Promise<Ticket> {
+    const ticket = await this.findTicketOrFail(id);
 
-    if (!ticket) {
-      throw new TicketNotFoundError(input.id);
-    }
+    ticket.changeTitle(title);
+    ticket.changeSubject(subject);
 
-    if (input.title !== undefined) {
-      ticket.changeTitle(input.title);
-    }
+    await this.ticketRepository.save(ticket);
 
-    if (input.subject !== undefined) {
-      ticket.changeSubject(input.subject);
-    }
+    return ticket;
+  }
 
-    if (input.priority !== undefined) {
-      ticket.changePriority(input.priority);
-    }
+  public async changeTicketPriority(id: string, priority: TicketPriority): Promise<Ticket> {
+    const ticket = await this.findTicketOrFail(id);
 
-    if (input.stage !== undefined) {
-      ticket.changeStage(input.stage);
-    }
+    ticket.changePriority(priority);
+
+    await this.ticketRepository.save(ticket);
+
+    return ticket;
+  }
+
+  public async advanceTicketStage(id: string, stage: TicketStage): Promise<Ticket> {
+    const ticket = await this.findTicketOrFail(id);
+
+    ticket.changeStage(stage);
 
     await this.ticketRepository.save(ticket);
 
@@ -58,6 +60,10 @@ export class TicketService implements TicketUseCases {
   }
 
   public async getTicketById(id: string): Promise<Ticket> {
+    return await this.findTicketOrFail(id);
+  }
+
+  private async findTicketOrFail(id: string): Promise<Ticket> {
     const ticket = await this.ticketRepository.getTicketById(id);
 
     if (!ticket) {
