@@ -7,10 +7,8 @@ import {
   parseTicketPriority,
   parseTicketStage,
 } from "../common";
-import { TicketPriority, TicketStage } from "src/domain/ticket/Ticket.domain";
+import { TicketPriority, TicketStage, InvalidTicketDataError } from "src/domain/ticket";
 import { TicketNotFoundError } from "src/app/ticket/exceptions/TicketNotFound.error";
-import { InvalidTicketDataError } from "src/domain/ticket/exceptions/InvalidTicketData.error";
-import { EditTicketInput } from "src/app/ticket/ports/inputs/EditTicket.input";
 import { TICKET_USE_CASES, type TicketUseCases } from "src/app/ticket/ports/TicketUseCases.port";
 
 export interface EditTicketFlags {
@@ -31,14 +29,24 @@ export class EditTicketCommand extends CommandRunner {
   
   public async run(passedParams: string[], options: EditTicketFlags): Promise<void> {
     try {
-      const ticket = await this.ticketUseCases.editTicket(new EditTicketInput(
-        options.id,
-        options.title,
-        options.subject,
-        options.priority,
-        options.stage,
-      ));
-      
+      let ticket = await this.ticketUseCases.getTicketById(options.id);
+
+      if (options.title !== undefined && options.subject !== undefined) {
+        ticket = await this.ticketUseCases.reviseTicketContent(options.id, options.title, options.subject);
+      } else if (options.title !== undefined) {
+        ticket = await this.ticketUseCases.reviseTicketContent(options.id, options.title, ticket.subject);
+      } else if (options.subject !== undefined) {
+        ticket = await this.ticketUseCases.reviseTicketContent(options.id, ticket.title, options.subject);
+      }
+
+      if (options.priority !== undefined) {
+        ticket = await this.ticketUseCases.changeTicketPriority(options.id, options.priority);
+      }
+
+      if (options.stage !== undefined) {
+        ticket = await this.ticketUseCases.advanceTicketStage(options.id, options.stage);
+      }
+
       const table = new Table({
         head: ["ID", "Title", "Subject", "Created", "Last Updated", "Priority", "Stage"],
       });

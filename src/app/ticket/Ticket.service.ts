@@ -1,7 +1,7 @@
-import { Ticket } from "src/domain/ticket/Ticket.domain";
+import { Ticket, TicketPriority, TicketStage } from "src/domain/ticket";
 import { TicketNotFoundError } from "src/app/ticket/exceptions/TicketNotFound.error";
+import { TicketDto } from "./dto/Ticket.dto";
 import { CreateTicketInput } from "./ports/inputs/CreateTicket.input";
-import { EditTicketInput } from "./ports/inputs/EditTicket.input";
 import { TicketIdGenerator } from "./ports/TicketIdGenerator.port";
 import { TicketRepository } from "./ports/TicketRepository.port";
 import { TicketUseCases } from "./ports/TicketUseCases.port";
@@ -12,7 +12,7 @@ export class TicketService implements TicketUseCases {
     private readonly ticketRepository: TicketRepository,
   ) {}
 
-  public async createTicket(input: CreateTicketInput): Promise<Ticket> {
+  public async createTicket(input: CreateTicketInput): Promise<TicketDto> {
     const ticket = Ticket.create(
       this.ticketIdGenerator.generate(),
       input.title,
@@ -22,42 +22,51 @@ export class TicketService implements TicketUseCases {
 
     await this.ticketRepository.save(ticket);
 
-    return ticket;
+    return TicketDto.fromEntity(ticket);
   }
 
-  public async editTicket(input: EditTicketInput): Promise<Ticket> {
-    const ticket: Ticket | null = await this.ticketRepository.getTicketById(input.id);
+  public async reviseTicketContent(id: string, title: string, subject: string): Promise<TicketDto> {
+    const ticket = await this.findTicketOrFail(id);
 
-    if (!ticket) {
-      throw new TicketNotFoundError(input.id);
-    }
-
-    if (input.title !== undefined) {
-      ticket.changeTitle(input.title);
-    }
-
-    if (input.subject !== undefined) {
-      ticket.changeSubject(input.subject);
-    }
-
-    if (input.priority !== undefined) {
-      ticket.changePriority(input.priority);
-    }
-
-    if (input.stage !== undefined) {
-      ticket.changeStage(input.stage);
-    }
+    ticket.changeTitle(title);
+    ticket.changeSubject(subject);
 
     await this.ticketRepository.save(ticket);
 
-    return ticket;
+    return TicketDto.fromEntity(ticket);
   }
 
-  public async listTickets(): Promise<Ticket[]> {
-    return await this.ticketRepository.listTicket();
+  public async changeTicketPriority(id: string, priority: TicketPriority): Promise<TicketDto> {
+    const ticket = await this.findTicketOrFail(id);
+
+    ticket.changePriority(priority);
+
+    await this.ticketRepository.save(ticket);
+
+    return TicketDto.fromEntity(ticket);
   }
 
-  public async getTicketById(id: string): Promise<Ticket> {
+  public async advanceTicketStage(id: string, stage: TicketStage): Promise<TicketDto> {
+    const ticket = await this.findTicketOrFail(id);
+
+    ticket.changeStage(stage);
+
+    await this.ticketRepository.save(ticket);
+
+    return TicketDto.fromEntity(ticket);
+  }
+
+  public async listTickets(): Promise<TicketDto[]> {
+    const tickets = await this.ticketRepository.listTicket();
+    return tickets.map(TicketDto.fromEntity);
+  }
+
+  public async getTicketById(id: string): Promise<TicketDto> {
+    const ticket = await this.findTicketOrFail(id);
+    return TicketDto.fromEntity(ticket);
+  }
+
+  private async findTicketOrFail(id: string): Promise<Ticket> {
     const ticket = await this.ticketRepository.getTicketById(id);
 
     if (!ticket) {

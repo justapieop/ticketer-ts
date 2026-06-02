@@ -2,7 +2,6 @@ import { Inject } from "@nestjs/common";
 import { Command, CommandRunner, Option } from "nest-commander";
 import Table from "cli-table3";
 import { Knowledge } from "src/domain/kb/Knowledge.domain";
-import { KNOWLEDGE_ID_GENERATOR, type KnowledgeIdGenerator } from "src/app/kb/ports/KnowledgeId.generator";
 import { KNOWLEDGE_USE_CASES, type KnowledgeUseCase } from "src/app/kb/ports/KnowledgeUseCase.port";
 
 export interface AddKnowledgeFlags {
@@ -16,14 +15,13 @@ export interface AddKnowledgeFlags {
 export class AddKnowledgeCommand extends CommandRunner {
 	public constructor(
 		@Inject(KNOWLEDGE_USE_CASES) private readonly knowledgeUseCases: KnowledgeUseCase,
-		@Inject(KNOWLEDGE_ID_GENERATOR) private readonly knowledgeIdGenerator: KnowledgeIdGenerator,
 	) {
 		super();
 	}
 
 	public async run(passedParams: string[], options: AddKnowledgeFlags): Promise<void> {
 		const document = Knowledge.create(
-			this.knowledgeIdGenerator.generate(),
+			"",
 			options.title,
 			options.content,
 			options.nodePath,

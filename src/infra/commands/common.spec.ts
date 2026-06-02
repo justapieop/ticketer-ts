@@ -1,4 +1,4 @@
-import { TicketPriority, TicketStage } from "src/domain/ticket/Ticket.domain";
+import { TicketPriority, TicketStage } from "src/domain/ticket";
 import {
   parseTicketPriority,
   parseTicketStage,

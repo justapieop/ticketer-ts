@@ -1,23 +1,16 @@
 import { Module } from "@nestjs/common";
 import { KnowledgeService } from "src/app/kb/Knowledge.service";
-import { KNOWLEDGE_ID_GENERATOR } from "src/app/kb/ports/KnowledgeId.generator";
 import { KNOWLEDGE_REPOSITORY, type KnowledgeRepository } from "src/app/kb/ports/Knowledge.repository";
 import { KNOWLEDGE_USE_CASES } from "src/app/kb/ports/KnowledgeUseCase.port";
 import { AddKnowledgeCommand } from "src/infra/commands/kb/AddKnowledge.command";
 import { ListKnowledgeCommand } from "src/infra/commands/kb/ListKnowledge.command";
 import { RetrieveKnowledgeCommand } from "src/infra/commands/kb/RetrieveKnowledge.command";
 import { SearchKnowledgeCommand } from "src/infra/commands/kb/SearchKnowledge.command";
-import { NanoIdGenerator } from "src/infra/nanoid/NanoId.generator";
 import { HttpKnowledgeRepository } from "src/infra/http/HttpKnowledge.repository";
 import { MockKnowledgeRepository } from "src/infra/mock/MockKnowledge.repository";
 
 @Module({
 	providers: [
-		NanoIdGenerator,
-		{
-			provide: KNOWLEDGE_ID_GENERATOR,
-			useExisting: NanoIdGenerator,
-		},
 		{
 			provide: KNOWLEDGE_REPOSITORY,
 			useFactory: (): MockKnowledgeRepository | HttpKnowledgeRepository => {
