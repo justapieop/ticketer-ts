@@ -1,3 +1,5 @@
+import { InvalidKnowledgeDataError } from "./exceptions/InvalidKnowledgeData.error";
+
 export class Knowledge {
   private constructor(
     public readonly id: string,
@@ -13,7 +15,7 @@ export class Knowledge {
     content: string,
     nodePath: string,
     tags: string[],
-  ) {
+  ): Knowledge {
     return new Knowledge(
       id, title, content, nodePath, tags
     );
@@ -27,15 +29,15 @@ export class Knowledge {
     tags: string[] = [],
   ): Knowledge {
     if (!title.trim()) {
-      throw new Error("Title cannot be empty.");
+      throw new InvalidKnowledgeDataError("Title cannot be empty.");
     }
 
     if (!content.trim()) {
-      throw new Error("Content cannot be empty.");
+      throw new InvalidKnowledgeDataError("Content cannot be empty.");
     }
 
     if (!nodePath.trim()) {
-      throw new Error("Node path cannot be empty.");
+      throw new InvalidKnowledgeDataError("Node path cannot be empty.");
     }
 
     return new Knowledge(id, title, content, nodePath, tags);

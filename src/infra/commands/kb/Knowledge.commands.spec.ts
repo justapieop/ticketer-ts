@@ -50,14 +50,11 @@ describe("Knowledge commands", () => {
 		logSpy.mockRestore();
 	});
 
-	test("add command generates an id and saves a created document", async () => {
+	test("add command saves a created document", async () => {
 		const knowledgeUseCases = {
 			save: jest.fn().mockResolvedValue(undefined),
 		} as any;
-		const knowledgeIdGenerator = {
-			generate: jest.fn().mockReturnValue("kb-1"),
-		} as any;
-		const command = new AddKnowledgeCommand(knowledgeUseCases, knowledgeIdGenerator);
+		const command = new AddKnowledgeCommand(knowledgeUseCases);
 		const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 
 		await command.run([], {
@@ -67,9 +64,7 @@ describe("Knowledge commands", () => {
 			tags: ["template", "email"],
 		});
 
-		expect(knowledgeIdGenerator.generate).toHaveBeenCalled();
 		expect(knowledgeUseCases.save).toHaveBeenCalledWith(expect.objectContaining({
-			id: "kb-1",
 			title: "Customer Response Template",
 			content: "Hello, thanks for reaching out.",
 			nodePath: "/templates/email",
