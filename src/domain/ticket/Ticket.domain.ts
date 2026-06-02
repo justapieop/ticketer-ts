@@ -1,11 +1,6 @@
 import { InvalidTicketDataError } from "./exceptions/InvalidTicketData.error";
-import { TicketEditor } from "./TicketEditor";
 import { TicketPriority } from "./TicketPriority.enum";
 import { TicketStage } from "./TicketStage.enum";
-
-export { TicketPriority } from "./TicketPriority.enum";
-export { TicketStage } from "./TicketStage.enum";
-export { TicketEditor } from "./TicketEditor";
 
 export class Ticket {
   private constructor(
@@ -47,11 +42,17 @@ export class Ticket {
   }
 
   public changeTitle(title: string): void {
+    if (!title.trim()) {
+      throw new InvalidTicketDataError("Title cannot be empty.");
+    }
     this.title = title;
     this.updatedAt = new Date();
   }
 
   public changeSubject(subject: string): void {
+    if (!subject.trim()) {
+      throw new InvalidTicketDataError("Subject cannot be empty.");
+    }
     this.subject = subject;
     this.updatedAt = new Date();
   }
@@ -67,9 +68,6 @@ export class Ticket {
     this.updatedAt = new Date();
   }
 
-  public edit(): TicketEditor {
-    return new TicketEditor(this);
-  }
 
   public static validateStageTransition(from: TicketStage, to: TicketStage): void {
     if (from === to) {
