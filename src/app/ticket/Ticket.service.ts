@@ -1,4 +1,4 @@
-import { Ticket } from "src/domain/ticket/Ticket.domain";
+import { Ticket } from "src/domain/ticket";
 import { TicketNotFoundError } from "src/app/ticket/exceptions/TicketNotFound.error";
 import { CreateTicketInput } from "./ports/inputs/CreateTicket.input";
 import { EditTicketInput } from "./ports/inputs/EditTicket.input";

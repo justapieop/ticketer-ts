@@ -1,5 +1,5 @@
 import { TicketService } from './Ticket.service';
-import { Ticket, TicketPriority, TicketStage } from '../../domain/ticket/Ticket.domain';
+import { Ticket, TicketPriority, TicketStage } from '../../domain/ticket';
 import { TicketNotFoundError } from './exceptions/TicketNotFound.error';
 import { CreateTicketInput } from './ports/inputs/CreateTicket.input';
 import { EditTicketInput } from './ports/inputs/EditTicket.input';

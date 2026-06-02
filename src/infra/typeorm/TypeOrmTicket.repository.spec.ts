@@ -1,6 +1,6 @@
 import { TypeOrmTicketRepository } from './TypeOrmTicket.repository';
 import { TypeOrmTicketPriority, TypeOrmTicketStage } from './TypeOrmTicket.schema';
-import { Ticket, TicketPriority, TicketStage } from 'src/domain/ticket/Ticket.domain';
+import { Ticket, TicketPriority, TicketStage } from 'src/domain/ticket';
 
 describe('TypeOrmTicketRepository', () => {
   let mockRepo: any;

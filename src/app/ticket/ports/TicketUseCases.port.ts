@@ -1,4 +1,4 @@
-import { Ticket } from "src/domain/ticket/Ticket.domain";
+import { Ticket } from "src/domain/ticket";
 import { CreateTicketInput } from "./inputs/CreateTicket.input";
 import { EditTicketInput } from "./inputs/EditTicket.input";
 

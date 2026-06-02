@@ -1,4 +1,4 @@
-import { Ticket } from "src/domain/ticket/Ticket.domain";
+import { Ticket } from "src/domain/ticket";
 
 export const TICKET_REPOSITORY = Symbol("TICKET_REPOSITORY");
 

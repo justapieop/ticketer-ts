@@ -1,4 +1,4 @@
-import { TicketPriority } from "src/domain/ticket/Ticket.domain";
+import { TicketPriority } from "src/domain/ticket";
 
 export class CreateTicketInput {
   public constructor(

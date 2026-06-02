@@ -1,4 +1,4 @@
-import { TicketPriority, TicketStage } from "src/domain/ticket/Ticket.domain";
+import { TicketPriority, TicketStage } from "src/domain/ticket";
 
 export const TICKET_PRIORITY_CHOICES = Object.values(TicketPriority);
 export const TICKET_STAGE_CHOICES = Object.values(TicketStage);
