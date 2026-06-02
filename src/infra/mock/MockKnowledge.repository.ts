@@ -4,14 +4,16 @@ import { MockKnowledgeSchema } from "./MockKnowledge.schema";
 
 export class MockKnowledgeRepository implements KnowledgeRepository {
   private readonly store: Map<string, MockKnowledgeSchema>;
+  private nextId = 1;
 
   public constructor() {
     this.store = new Map();
   }
 
   public async save(knowledge: Knowledge): Promise<void> {
-    this.store.set(knowledge.id, new MockKnowledgeSchema(
-      knowledge.id,
+    const id = knowledge.id || `mock-kb-${this.nextId++}`;
+    this.store.set(id, new MockKnowledgeSchema(
+      id,
       knowledge.title,
       knowledge.content,
       knowledge.nodePath,

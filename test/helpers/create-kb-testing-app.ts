@@ -1,7 +1,6 @@
 import { INestApplication } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { KnowledgeService } from "src/app/kb/Knowledge.service";
-import { KNOWLEDGE_ID_GENERATOR } from "src/app/kb/ports/KnowledgeId.generator";
 import { KNOWLEDGE_REPOSITORY, type KnowledgeRepository } from "src/app/kb/ports/Knowledge.repository";
 import { KNOWLEDGE_USE_CASES } from "src/app/kb/ports/KnowledgeUseCase.port";
 import { MockKnowledgeRepository } from "src/infra/mock/MockKnowledge.repository";
@@ -16,14 +15,9 @@ export async function createKbTestingApp(): Promise<{
 	repository: KnowledgeRepository;
 }> {
 	const repository = new MockKnowledgeRepository();
-	let nextKnowledgeId = 1;
 
 	const moduleRef: TestingModule = await Test.createTestingModule({
 		providers: [
-			{
-				provide: KNOWLEDGE_ID_GENERATOR,
-				useValue: { generate: () => `kb-e2e-id-${nextKnowledgeId++}` },
-			},
 			{
 				provide: KNOWLEDGE_REPOSITORY,
 				useValue: repository,

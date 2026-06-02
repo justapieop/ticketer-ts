@@ -3,7 +3,7 @@ import { CreateTicketCommand } from 'src/infra/commands/ticket/CreateTicket.comm
 import { ListTicketCommand } from 'src/infra/commands/ticket/ListTicket.command';
 import { GetTicketCommand } from 'src/infra/commands/ticket/GetTicket.command';
 import { EditTicketCommand } from 'src/infra/commands/ticket/EditTicket.command';
-import { TicketPriority, TicketStage } from 'src/domain/ticket/Ticket.domain';
+import { TicketPriority, TicketStage } from 'src/domain/ticket';
 import { TicketUseCases, TICKET_USE_CASES } from 'src/app/ticket/ports/TicketUseCases.port';
 import { createTestingApp } from './helpers/create-testing-app';
 

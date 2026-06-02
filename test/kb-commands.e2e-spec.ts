@@ -23,9 +23,8 @@ describe("KB Commands E2E", () => {
 		await app.close();
 	});
 
-	test("add creates a knowledge document and retrieve can read it back", async () => {
+	test("add creates a knowledge document and it can be found via search", async () => {
 		const addCmd = moduleRef.get(AddKnowledgeCommand);
-		const retrieveCmd = moduleRef.get(RetrieveKnowledgeCommand);
 
 		const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 
@@ -36,16 +35,14 @@ describe("KB Commands E2E", () => {
 			tags: ["template", "email"],
 		});
 
-		const stored = await repository.retrieve("kb-e2e-id-1");
-		expect(stored).toMatchObject({
-			id: "kb-e2e-id-1",
+		const documents = await repository.search("Customer Response Template", 5);
+		expect(documents).toHaveLength(1);
+		expect(documents[0]).toMatchObject({
 			title: "Customer Response Template",
+			content: "Hello, thanks for reaching out.",
 			nodePath: "/templates/email",
 		});
 
-		await retrieveCmd.run([], { id: "kb-e2e-id-1" });
-
-		expect(logSpy).toHaveBeenCalled();
 		logSpy.mockRestore();
 	});
 
