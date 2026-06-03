@@ -38,15 +38,14 @@ export class TypeOrmTicketRepository implements TicketRepository {
       return null;
     }
 
-    const newTicket: Ticket = Ticket.reconstitute(
-      schema.id,
-      schema.title,
-      schema.subject,
-      new Date(schema.createdAt),
-      schema.updatedAt ? new Date(schema.updatedAt) : null,
-      this.toDomainPriority(schema.priority),
-      this.toDomainStage(schema.stage),
-    );
+    const newTicket: Ticket = Ticket.reconstitute(schema.id, {
+      title: schema.title,
+      subject: schema.subject,
+      createdAt: new Date(schema.createdAt),
+      updatedAt: schema.updatedAt ? new Date(schema.updatedAt) : null,
+      priority: this.toDomainPriority(schema.priority),
+      stage: this.toDomainStage(schema.stage),
+    });
 
     return newTicket;
   }
@@ -54,15 +53,14 @@ export class TypeOrmTicketRepository implements TicketRepository {
   public async listTicket(): Promise<Ticket[]> {
     const data: TypeOrmTicketSchema[] = await this.ticketRepository.find();
 
-    return data.map((d) => Ticket.reconstitute(
-      d.id,
-      d.title,
-      d.subject,
-      new Date(d.createdAt),
-      d.updatedAt ? new Date(d.updatedAt) : null,
-      this.toDomainPriority(d.priority),
-      this.toDomainStage(d.stage),
-    ));
+    return data.map((d) => Ticket.reconstitute(d.id, {
+      title: d.title,
+      subject: d.subject,
+      createdAt: new Date(d.createdAt),
+      updatedAt: d.updatedAt ? new Date(d.updatedAt) : null,
+      priority: this.toDomainPriority(d.priority),
+      stage: this.toDomainStage(d.stage),
+    }));
   }
 
   private toSchemaPriority(priority: TicketPriority): TypeOrmTicketPriority {

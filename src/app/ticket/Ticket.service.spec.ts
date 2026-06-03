@@ -29,7 +29,7 @@ describe('TicketService', () => {
 
   test('listTickets returns TicketDto array', async () => {
     const mockIdGen = { generate: jest.fn() };
-    const sample = [Ticket.reconstitute('1', 'a', 'b', new Date(), null, TicketPriority.Standard, TicketStage.Created)];
+    const sample = [Ticket.reconstitute('1', { title: 'a', subject: 'b', createdAt: new Date(), updatedAt: null, priority: TicketPriority.Standard, stage: TicketStage.Created })];
     const mockRepo = { save: jest.fn(), getTicketById: jest.fn(), listTicket: jest.fn().mockResolvedValue(sample) } as any;
 
     const svc = new TicketService(mockIdGen as any, mockRepo as any);
@@ -43,7 +43,7 @@ describe('TicketService', () => {
 
   test('reviseTicketContent returns TicketDto with updated content', async () => {
     const mockIdGen = { generate: jest.fn() };
-    const ticket = Ticket.reconstitute('1', 'old title', 'old subject', new Date(0), null, TicketPriority.Standard, TicketStage.Created);
+    const ticket = Ticket.reconstitute('1', { title: 'old title', subject: 'old subject', createdAt: new Date(0), updatedAt: null, priority: TicketPriority.Standard, stage: TicketStage.Created });
     const mockRepo = {
       save: jest.fn().mockImplementation(async (t: Ticket) => t),
       getTicketById: jest.fn().mockResolvedValue(ticket),
@@ -62,7 +62,7 @@ describe('TicketService', () => {
 
   test('changeTicketPriority returns TicketDto with updated priority', async () => {
     const mockIdGen = { generate: jest.fn() };
-    const ticket = Ticket.reconstitute('1', 'a', 'b', new Date(0), null, TicketPriority.Standard, TicketStage.Created);
+    const ticket = Ticket.reconstitute('1', { title: 'a', subject: 'b', createdAt: new Date(0), updatedAt: null, priority: TicketPriority.Standard, stage: TicketStage.Created });
     const mockRepo = {
       save: jest.fn().mockImplementation(async (t: Ticket) => t),
       getTicketById: jest.fn().mockResolvedValue(ticket),
@@ -79,7 +79,7 @@ describe('TicketService', () => {
 
   test('advanceTicketStage returns TicketDto with updated stage', async () => {
     const mockIdGen = { generate: jest.fn() };
-    const ticket = Ticket.reconstitute('1', 'a', 'b', new Date(0), null, TicketPriority.Standard, TicketStage.Created);
+    const ticket = Ticket.reconstitute('1', { title: 'a', subject: 'b', createdAt: new Date(0), updatedAt: null, priority: TicketPriority.Standard, stage: TicketStage.Created });
     const mockRepo = {
       save: jest.fn().mockImplementation(async (t: Ticket) => t),
       getTicketById: jest.fn().mockResolvedValue(ticket),
@@ -110,7 +110,7 @@ describe('TicketService', () => {
 
   test('getTicketById returns TicketDto', async () => {
     const mockIdGen = { generate: jest.fn() };
-    const ticket = Ticket.reconstitute('1', 'a', 'b', new Date(0), null, TicketPriority.Standard, TicketStage.Created);
+    const ticket = Ticket.reconstitute('1', { title: 'a', subject: 'b', createdAt: new Date(0), updatedAt: null, priority: TicketPriority.Standard, stage: TicketStage.Created });
     const mockRepo = {
       save: jest.fn(),
       getTicketById: jest.fn().mockResolvedValue(ticket),
