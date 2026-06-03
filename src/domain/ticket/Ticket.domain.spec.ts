@@ -30,15 +30,28 @@ describe('Ticket domain', () => {
 
   test('reconstitute() restores a ticket without validation', () => {
     const date = new Date(0);
-    const t = Ticket.reconstitute('1', 'a', 's', date, null, TicketPriority.Standard, TicketStage.Closed);
+    const t = Ticket.reconstitute('1', {
+      title: 'a',
+      subject: 's',
+      createdAt: date,
+      updatedAt: null,
+      priority: TicketPriority.Standard,
+      stage: TicketStage.Closed,
+    });
     expect(t.id).toBe('1');
     expect(t.stage).toBe(TicketStage.Closed);
     expect(t.createdAt).toBe(date);
   });
 
-
   test('changeTitle and changeSubject update fields and touch updatedAt', () => {
-    const t = Ticket.reconstitute('1', 'a', 's', new Date(0), null, TicketPriority.Standard, TicketStage.Created);
+    const t = Ticket.reconstitute('1', {
+      title: 'a',
+      subject: 's',
+      createdAt: new Date(0),
+      updatedAt: null,
+      priority: TicketPriority.Standard,
+      stage: TicketStage.Created,
+    });
 
     const before = t.updatedAt;
     t.changeTitle('new title');
@@ -50,25 +63,51 @@ describe('Ticket domain', () => {
   });
 
   test('changeTitle rejects empty title', () => {
-    const t = Ticket.reconstitute('1', 'a', 's', new Date(0), null, TicketPriority.Standard, TicketStage.Created);
+    const t = Ticket.reconstitute('1', {
+      title: 'a',
+      subject: 's',
+      createdAt: new Date(0),
+      updatedAt: null,
+      priority: TicketPriority.Standard,
+      stage: TicketStage.Created,
+    });
     expect(() => t.changeTitle('')).toThrow(InvalidTicketDataError);
     expect(() => t.changeTitle('   ')).toThrow(InvalidTicketDataError);
   });
 
   test('changeSubject rejects empty subject', () => {
-    const t = Ticket.reconstitute('1', 'a', 's', new Date(0), null, TicketPriority.Standard, TicketStage.Created);
+    const t = Ticket.reconstitute('1', {
+      title: 'a',
+      subject: 's',
+      createdAt: new Date(0),
+      updatedAt: null,
+      priority: TicketPriority.Standard,
+      stage: TicketStage.Created,
+    });
     expect(() => t.changeSubject('')).toThrow(InvalidTicketDataError);
     expect(() => t.changeSubject('   ')).toThrow(InvalidTicketDataError);
   });
 
   test('changeStage enforces stage transition validation', () => {
-    const t = Ticket.reconstitute('1', 'a', 's', new Date(0), null, TicketPriority.Standard, TicketStage.Created);
+    const t = Ticket.reconstitute('1', {
+      title: 'a',
+      subject: 's',
+      createdAt: new Date(0),
+      updatedAt: null,
+      priority: TicketPriority.Standard,
+      stage: TicketStage.Created,
+    });
 
-    // valid
     expect(() => t.changeStage(TicketStage.InProgress)).not.toThrow();
 
-    // invalid transition (Created -> Closed)
-    const t2 = Ticket.reconstitute('2', 'b', 's', new Date(0), null, TicketPriority.Standard, TicketStage.Created);
+    const t2 = Ticket.reconstitute('2', {
+      title: 'b',
+      subject: 's',
+      createdAt: new Date(0),
+      updatedAt: null,
+      priority: TicketPriority.Standard,
+      stage: TicketStage.Created,
+    });
     expect(() => t2.changeStage(TicketStage.Closed)).toThrow(InvalidTicketDataError);
   });
 });

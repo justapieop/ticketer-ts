@@ -2,7 +2,7 @@ import { InvalidTicketDataError } from "./exceptions/InvalidTicketData.error";
 import { TicketPriority } from "./TicketPriority.enum";
 import { TicketStage } from "./TicketStage.enum";
 
-interface TicketProps {
+export interface TicketProps {
   title: string;
   subject: string;
   createdAt: Date;
@@ -46,23 +46,8 @@ export class Ticket {
     });
   }
 
-  public static reconstitute(
-    id: string,
-    title: string,
-    subject: string,
-    createdAt: Date,
-    updatedAt: Date | null,
-    priority: TicketPriority,
-    stage: TicketStage,
-  ): Ticket {
-    return new Ticket(id, {
-      title,
-      subject,
-      createdAt,
-      updatedAt,
-      priority,
-      stage,
-    });
+  public static reconstitute(id: string, props: TicketProps): Ticket {
+    return new Ticket(id, props);
   }
 
   public changeTitle(title: string): void {
